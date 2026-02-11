@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Joy Church International – Team Applications</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .notice {
+      background: #fff3cd;
+      border-left: 6px solid #ffc107;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .team {
+      border-bottom: 1px solid #ddd;
+      padding: 16px 0;
+    }
+
+    .team-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .status.closed {
+      background: #fde2e2;
+      color: #9b1c1c;
+    }
+
+    .status.open {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    #applyBtn {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #applyBtn:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Team Application Status</h1>
+
+    <div class="notice">
+      <strong>IMPORTANT – PLEASE READ BEFORE APPLYING</strong>
+      <ul>
+        <li>Do not spam applications</li>
+        <li>Wait up to 72 hours for review</li>
+      </ul>
+    </div>
+
+    <div id="teams"></div>
+
+    <button id="applyBtn">APPLY NOW</button>
+  </div>
+
+  <script>
+    const teamsDiv = document.getElementById("teams");
+    const applyBtn = document.getElementById("applyBtn");
+
+    fetch("http://localhost:3000/api/teams")
+      .then(res => res.json())
+      .then(teams => {
+        let anyOpen = false;
+
+        teams.forEach(team => {
+          if (team.status === "open") anyOpen = true;
+
+          const div = document.createElement("div");
+          div.className = "team";
+
+          div.innerHTML = `
+            <div class="team-header">
+              <h3>${team.name}</h3>
+              <span class="status ${team.status}">${team.status}</span>
+            </div>
+            <p><strong>Leader:</strong> ${team.leader}</p>
+            <p>${team.description}</p>
+          `;
+
+          teamsDiv.appendChild(div);
+        });
+
+        if (!anyOpen) {
+          applyBtn.disabled = true;
+          applyBtn.textContent = "APPLICATIONS CLOSED";
+        }
+      });
+  </script>
+</body>
+</html>
