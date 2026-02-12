@@ -93,7 +93,7 @@
     const teamsDiv = document.getElementById("teams");
     const applyBtn = document.getElementById("applyBtn");
 
-    fetch("./teams.json")
+    fetch("teams.json")
       .then(res => res.json())
       .then(teams => {
         let anyOpen = false;
