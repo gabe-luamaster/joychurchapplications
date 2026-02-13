@@ -11,7 +11,7 @@ window.APP_SETTINGS = {
       status: "Open"
     },
     {
-      name: "Worship Team",
+      name: "Worship Teaam",
       leaders: ["Lyca"],
       description:
         "Leads congregants in worship through music during services.",
