@@ -2,20 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("teams");
   const applyBtn = document.getElementById("applyBtn");
 
-  if (!container) {
-    console.error("Missing #teams container");
-    return;
-  }
+  if (!container || !window.APP_SETTINGS) return;
 
-  // 🔥 ABSOLUTE RESET (prevents duplication)
+  // 🔥 HARD RESET (no duplicates ever)
   container.innerHTML = "";
 
-  if (!window.APP_SETTINGS) {
-    console.error("settings.js did not load");
-    return;
-  }
-
-  // Global application toggle
+  // Global applications toggle
   if (!APP_SETTINGS.applicationsOpen) {
     applyBtn.textContent = "Applications Closed";
     applyBtn.classList.add("opacity-50", "pointer-events-none");
@@ -35,11 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const subteamsHTML = team.subteams
       ? `
         <div class="mt-3 ml-4 border-l pl-4 space-y-2">
-          <p class="text-sm font-semibold">Sub-Teams</p>
+          <p class="text-sm font-semibold text-gray-700">Sub-Teams</p>
           ${team.subteams
             .map(
               sub => `
-              <div class="flex justify-between text-sm">
+              <div class="flex justify-between items-start text-sm">
                 <div>
                   <p class="font-medium">${sub.name}</p>
                   <p class="text-gray-600">${sub.description}</p>
