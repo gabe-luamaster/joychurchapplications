@@ -30,6 +30,13 @@ window.APP_SETTINGS = {
         "Manages in-game stage lighting and technical production.",
       status: "Closed"
     },
+      {
+      name: "Creative Department",
+      leaders: ["LawnPro"],
+      description:
+        "Builds and degins the church campus and helps Arrange things inside to create a Virutal Campus for Joy Church.",
+      status: "Open"
+    },
     {
       name: "Media Team",
       leaders: ["Joey"],
