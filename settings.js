@@ -1,23 +1,51 @@
-[
-  {
-    "id": 1,
-    "name": "Creative Experience Team",
-    "leader": "Jordan Craft",
-    "description": "Fosters connections by welcoming guests and answering questions.",
-    "status": "closed"
-  },
-  {
-    "id": 2,
-    "name": "Worship Team",
-    "leader": "Ryan Ruiz",
-    "description": "Leads the church in worship through music.",
-    "status": "closed"
-  },
-  {
-    "id": 3,
-    "name": "Production Team",
-    "leader": "Caden Cole",
-    "description": "Handles lighting, sound, and visuals.",
-    "status": "open"
-  }
-]
+// settings.js
+window.APP_SETTINGS = {
+  applicationsOpen: true,
+
+  teams: [
+    {
+      name: "Dream Team",
+      leaders: ["N/A"],
+      description:
+        "Fosters connections by warmly welcoming guests, answering questions, and providing care.",
+      status: "Open"
+    },
+    {
+      name: "Worship Team",
+      leaders: ["Lyca"],
+      description:
+        "Leads congregants in worship through music during services.",
+      status: "Closed"
+    },
+    {
+      name: "Production Team",
+      leaders: ["Zyphic"],
+      description:
+        "Manages in-game stage lighting during services.",
+      status: "Closed"
+    },
+    {
+      name: "Media Team",
+      leaders: ["Joey"],
+      description:
+        "Creates media content for the ministry.",
+      requirements: "Must have a PC to apply!",
+      status: "Closed",
+      subteams: [
+        {
+          name: "Streamer Team",
+          description:
+            "Provides camera angles to the livestream director.",
+          status: "Closed"
+        }
+      ]
+    },
+    {
+      name: "Ministerial Team",
+      leaders: ["Pastor Gabriel"],
+      description:
+        "Delivers God’s Word and provides spiritual guidance.",
+      status: "Closed"
+    }
+  ]
+};
