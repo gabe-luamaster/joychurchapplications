@@ -1,41 +1,40 @@
-// settings.js
 window.APP_SETTINGS = {
-  applicationsOpen: true,
+  applicationsOpen: true, // false = closes apply button
 
   teams: [
     {
       name: "Dream Team",
       leaders: ["N/A"],
       description:
-        "Fosters connections by warmly welcoming guests, answering questions, and providing care.",
+        "Welcomes guests and helps everyone feel comfortable.",
       status: "Open"
     },
     {
-      name: "Worship Teaam",
+      name: "Worship Team",
       leaders: ["Lyca"],
       description:
-        "Leads congregants in worship through music during services.",
+        "Leads worship through music during services.",
       status: "Closed"
     },
     {
       name: "Production Team",
       leaders: ["Zyphic"],
       description:
-        "Manages in-game stage lighting during services.",
+        "Handles lighting and technical production.",
       status: "Closed"
     },
     {
       name: "Media Team",
       leaders: ["Joey"],
       description:
-        "Creates media content for the ministry.",
+        "Creates and manages media content.",
       requirements: "Must have a PC to apply!",
       status: "Closed",
       subteams: [
         {
           name: "Streamer Team",
           description:
-            "Provides camera angles to the livestream director.",
+            "Provides camera angles for livestreams.",
           status: "Closed"
         }
       ]
@@ -44,7 +43,7 @@ window.APP_SETTINGS = {
       name: "Ministerial Team",
       leaders: ["Pastor Gabriel"],
       description:
-        "Delivers God’s Word and provides spiritual guidance.",
+        "Delivers God’s Word and spiritual guidance.",
       status: "Closed"
     }
   ]
