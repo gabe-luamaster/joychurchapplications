@@ -36,13 +36,13 @@ window.APP_SETTINGS = {
       description:
         "Creates and manages media content for the ministry.",
       requirements: "Must have a PC to apply!",
-      status: "open",
+      status: "Open",
       subteams: [
         {
           name: "Streamer Team",
           description:
             "Provides camera angles to the livestream director.",
-          status: "Closed"
+          status: "Open"
         }
       ]
     },
@@ -51,7 +51,7 @@ window.APP_SETTINGS = {
       leaders: ["Pastor Gabriel"],
       description:
         "Delivers God’s Word and provides spiritual guidance.",
-      status: "Closed"
+      status: "Open"
     }
   ]
 };
