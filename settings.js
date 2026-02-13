@@ -14,7 +14,14 @@ window.APP_SETTINGS = {
       leaders: ["Lyca"],
       description:
         "Leads congregants in worship through music during services.",
-      status: "Closed"
+      status: "Open"
+    },
+      {
+      name: "Security Team",
+      leaders: ["Dylan"],
+      description:
+        "Leads congregants in worship through music during services.",
+      status: "Open"
     },
     {
       name: "Production Team",
@@ -29,7 +36,7 @@ window.APP_SETTINGS = {
       description:
         "Creates and manages media content for the ministry.",
       requirements: "Must have a PC to apply!",
-      status: "Closed",
+      status: "open",
       subteams: [
         {
           name: "Streamer Team",
