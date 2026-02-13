@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Team Applications</title>
 
-  <!-- Montserrat -->
+  <!-- Montserrat font -->
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
     rel="stylesheet"
@@ -21,51 +21,56 @@
   </style>
 </head>
 
-<body class="bg-gray-100 min-h-screen py-10">
-  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
+<body
+  class="min-h-screen bg-cover bg-center bg-no-repeat"
+  style="background-image: url('background.jpg');"
+>
+  <!-- Dark overlay -->
+  <div class="min-h-screen bg-black/60 py-10">
 
-    <!-- LOGO (optional) -->
-    <!-- <img src="logo.png" class="h-16 mx-auto mb-6" /> -->
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
 
-    <h1 class="text-2xl font-bold text-center mb-4">
-      Team Application Status
-    </h1>
+      <h1 class="text-2xl font-bold text-center mb-4 text-white">
+        Team Application Status
+      </h1>
 
-    <!-- ⚠️ ORIGINAL YELLOW REQUIREMENTS -->
-    <div class="mb-6 p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-900 space-y-3">
-      <p class="font-semibold text-lg">
-        ⚠️ IMPORTANT — PLEASE READ BEFORE APPLYING
-      </p>
+      <!-- IMPORTANT NOTICE -->
+      <div class="mb-6 p-4 rounded-lg bg-yellow-100/90 border border-yellow-300 text-yellow-900 space-y-3">
+        <p class="font-semibold text-lg">
+          ⚠️ IMPORTANT — PLEASE READ BEFORE APPLYING
+        </p>
 
-      <ul class="list-disc pl-5 text-sm space-y-1">
-        <li>
-          <strong>Do NOT use artificial intelligence</strong> in your application.
-          Doing so will result in a <strong>blacklist from all teams</strong>.
-        </li>
-        <li>
-          <strong>Write at least three sentences</strong> when answering questions.
-        </li>
-        <li>
-          <strong>Please wait up to 72 hours</strong> for your application to be reviewed.
-        </li>
-      </ul>
-    </div>
+        <ul class="list-disc pl-5 text-sm space-y-1">
+          <li>
+            <strong>Do NOT use artificial intelligence</strong> in your application.
+            Doing so will result in a <strong>blacklist from all teams</strong>.
+          </li>
+          <li>
+            <strong>Write at least three sentences</strong> when answering questions.
+          </li>
+          <li>
+            <strong>Please wait up to 72 hours</strong> for your application to be reviewed.
+          </li>
+        </ul>
+      </div>
 
-    <!-- JS OWNS THIS -->
-    <div id="teams" class="space-y-4"></div>
+      <!-- TEAMS RENDER HERE -->
+      <div id="teams" class="space-y-4"></div>
 
-    <div class="mt-10 flex justify-center">
-      <a
-        id="applyBtn"
-        href="https://docs.google.com/forms/PASTE_YOURS"
-        class="px-12 py-4 text-lg font-bold rounded-xl bg-black text-white hover:bg-gray-800 transition"
-      >
-        APPLY NOW
-      </a>
+      <div class="mt-10 flex justify-center">
+        <a
+          id="applyBtn"
+          href="https://docs.google.com/forms/PASTE_YOURS_HERE"
+          class="px-12 py-4 text-lg font-bold rounded-xl bg-black text-white hover:bg-gray-800 transition"
+        >
+          APPLY NOW
+        </a>
+      </div>
+
     </div>
   </div>
 
-  <!-- SCRIPT ORDER MATTERS -->
+  <!-- ORDER MATTERS -->
   <script src="settings.js"></script>
   <script src="app.js"></script>
 </body>
