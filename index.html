@@ -15,6 +15,8 @@
     body {
       font-family: "Montserrat", sans-serif;
       animation: fadeIn 1s ease-in-out;
+      background: white; /* WHITE BACKGROUND */
+      color: black;      /* BLACK TEXT */
     }
 
     @keyframes fadeIn {
@@ -24,8 +26,8 @@
 
     .glass {
       backdrop-filter: blur(14px);
-      background: rgba(255, 255, 255, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .hover-card {
@@ -34,7 +36,7 @@
 
     .hover-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
     }
 
     .btn-animated {
@@ -44,25 +46,23 @@
 
     .btn-animated:hover {
       transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
     }
   </style>
 </head>
 
-<body class="min-h-screen bg-cover bg-center bg-no-repeat"
-  style="background-image: url('https://i.imgur.com/ZN36YN0.png');">
+<body class="min-h-screen">
 
-  <!-- Dark overlay -->
-  <div class="min-h-screen bg-black/60 py-10">
+  <div class="min-h-screen py-10">
 
     <div class="max-w-4xl mx-auto glass rounded-2xl shadow-xl p-8 hover-card">
 
-      <h1 class="text-3xl font-extrabold text-center mb-6 text-white drop-shadow">
+      <h1 class="text-3xl font-extrabold text-center mb-6 text-black">
         Joy Church Application Website
       </h1>
 
       <!-- IMPORTANT NOTICE -->
-      <div class="mb-8 p-5 rounded-xl bg-yellow-100/90 border border-yellow-300 text-yellow-900 shadow hover-card">
+      <div class="mb-8 p-5 rounded-xl bg-yellow-100 border border-yellow-300 text-yellow-900 shadow hover-card">
         <p class="font-semibold text-lg flex items-center gap-2">
           ⚠️ IMPORTANT — PLEASE READ BEFORE APPLYING
         </p>
@@ -75,7 +75,7 @@
       </div>
 
       <!-- TEAMS RENDER HERE -->
-      <div id="teams" class="space-y-4"></div>
+      <div id="teams" class="space-y-4 text-black"></div>
 
       <!-- APPLY BUTTON -->
       <div class="mt-12 flex justify-center">
