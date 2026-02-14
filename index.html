@@ -6,10 +6,7 @@
   <title>Team Applications</title>
 
   <!-- Montserrat font -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -17,51 +14,75 @@
   <style>
     body {
       font-family: "Montserrat", sans-serif;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .glass {
+      backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .hover-card {
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .hover-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+
+    .btn-animated {
+      transition: all .25s ease;
+      transform: translateY(0);
+    }
+
+    .btn-animated:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 
-<body
-  class="min-h-screen bg-cover bg-center bg-no-repeat"
-  style="background-image: url('https://i.imgur.com/ZN36YN0.png');"
->
+<body class="min-h-screen bg-cover bg-center bg-no-repeat"
+  style="background-image: url('https://i.imgur.com/ZN36YN0.png');">
+
   <!-- Dark overlay -->
   <div class="min-h-screen bg-black/60 py-10">
 
-   <div class="max-w-4xl mx-auto bg-white/60 rounded-xl shadow p-6">
+    <div class="max-w-4xl mx-auto glass rounded-2xl shadow-xl p-8 hover-card">
 
-      <h1 class="text-2xl font-bold text-center mb-4 text-black">
+      <h1 class="text-3xl font-extrabold text-center mb-6 text-white drop-shadow">
         Joy Church Application Website
       </h1>
 
       <!-- IMPORTANT NOTICE -->
-      <div class="mb-6 p-4 rounded-lg bg-yellow-100/90 border border-yellow-300 text-yellow-900 space-y-3">
-        <p class="font-semibold text-lg">
+      <div class="mb-8 p-5 rounded-xl bg-yellow-100/90 border border-yellow-300 text-yellow-900 shadow hover-card">
+        <p class="font-semibold text-lg flex items-center gap-2">
           ⚠️ IMPORTANT — PLEASE READ BEFORE APPLYING
         </p>
 
-        <ul class="list-disc pl-5 text-sm space-y-1">
-          <li>
-            <strong>Do NOT use artificial intelligence</strong> in your application.
-            Doing so will result in a <strong>blacklist from all teams</strong>.
-          </li>
-          <li>
-            <strong>Write at least three sentences</strong> when answering questions.
-          </li>
-          <li>
-            <strong>Please wait up to 72 hours</strong> for your application to be reviewed.
-          </li>
+        <ul class="list-disc pl-5 text-sm space-y-2 mt-2">
+          <li><strong>Do NOT use artificial intelligence</strong> in your application. Doing so will result in a <strong>blacklist from all teams</strong>.</li>
+          <li><strong>Write at least three sentences</strong> when answering questions.</li>
+          <li><strong>Please wait up to 72 hours</strong> for your application to be reviewed.</li>
         </ul>
       </div>
 
       <!-- TEAMS RENDER HERE -->
       <div id="teams" class="space-y-4"></div>
 
-      <div class="mt-10 flex justify-center">
+      <!-- APPLY BUTTON -->
+      <div class="mt-12 flex justify-center">
         <a
           id="applyBtn"
           href="https://forms.gle/46HDq1zzDjwmWujC9"
-          class="px-12 py-4 text-lg font-bold rounded-xl bg-black text-white hover:bg-gray-800 transition"
+          class="btn-animated px-14 py-4 text-lg font-bold rounded-xl bg-gradient-to-r from-black to-gray-800 text-white shadow-lg"
         >
           APPLY NOW
         </a>
