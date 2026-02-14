@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <p class="text-sm text-gray-600 mt-1">
             <strong>Leaders:</strong> ${team.leaders.join(", ")}
           </p>
-          <p class="text-sm text-gray-0">
+          <p class="text-sm text-gray-600">
             <strong>Description:</strong> ${team.description}
           </p>
           ${requirementsHTML}
