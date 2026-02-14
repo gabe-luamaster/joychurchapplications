@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     container.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="border rounded-lg p-4 flex justify-between items-start">
+      <div class="border rounded-lg p-4 flex justify-between items-start text-white">
         <div>
           <h2 class="text-lg font-semibold">${team.name}</h2>
           <p class="text-sm text-gray-600 mt-1">
