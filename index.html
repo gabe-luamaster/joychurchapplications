@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Team Applications</title>
+  <title>Joy Church Applications</title>
 
-  <!-- Montserrat font -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <!-- Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,6 +15,69 @@
     body {
       font-family: "Montserrat", sans-serif;
     }
+
+    /* GLOBAL TRANSITIONS */
+    .smooth {
+      transition: all 0.35s ease;
+    }
+
+    /* CARD LIFT */
+    .lift:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+    }
+
+    /* SOFT GLOW */
+    .glow:hover {
+      box-shadow: 0 0 35px rgba(255,255,255,0.4);
+    }
+
+    /* FADE IN */
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* BUTTON RIPPLE FEEL */
+    .btn-hover {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-hover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn-hover:hover::after {
+      opacity: 1;
+    }
+
+    /* TEAM CARD HOVER (used by JS) */
+    .team-card {
+      background: rgba(255,255,255,0.75);
+      border-radius: 1rem;
+      padding: 1.25rem;
+    }
+
+    .team-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+    }
   </style>
 </head>
 
@@ -25,18 +85,20 @@
   class="min-h-screen bg-cover bg-center bg-no-repeat"
   style="background-image: url('https://i.imgur.com/ZN36YN0.png');"
 >
-  <!-- Dark overlay -->
-  <div class="min-h-screen bg-black/60 py-10">
+  <!-- DARK OVERLAY -->
+  <div class="min-h-screen bg-black/65 py-12 fade-in">
 
-   <div class="max-w-4xl mx-auto bg-white/60 rounded-xl shadow p-6">
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-4xl mx-auto bg-white/60 rounded-2xl shadow-xl p-8 smooth lift">
 
-      <h1 class="text-2xl font-bold text-center mb-4 text-white">
+      <!-- TITLE -->
+      <h1 class="text-3xl font-bold text-center mb-6 text-white drop-shadow-lg">
         Joy Church Application Website
       </h1>
 
       <!-- IMPORTANT NOTICE -->
-      <div class="mb-6 p-4 rounded-lg bg-yellow-100/90 border border-yellow-300 text-yellow-900 space-y-3">
-        <p class="font-semibold text-lg">
+      <div class="mb-8 p-5 rounded-xl bg-yellow-100/95 border border-yellow-300 text-yellow-900 space-y-3 smooth lift">
+        <p class="font-bold text-lg flex items-center gap-2">
           ⚠️ IMPORTANT — PLEASE READ BEFORE APPLYING
         </p>
 
@@ -46,23 +108,26 @@
             Doing so will result in a <strong>blacklist from all teams</strong>.
           </li>
           <li>
-            <strong>Write at least three sentences</strong> when answering questions.
+            <strong>Write at least three sentences</strong> for all written answers.
           </li>
           <li>
-            <strong>Please wait up to 72 hours</strong> for your application to be reviewed.
+            <strong>Please allow up to 72 hours</strong> for review.
           </li>
         </ul>
       </div>
 
-      <!-- TEAMS RENDER HERE -->
-      <div id="teams" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      <!-- TEAMS -->
+      <div
+        id="teams"
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in"
+      ></div>
 
-
-<div class="mt-10 flex justify-center">
+      <!-- APPLY BUTTON -->
+      <div class="mt-12 flex justify-center">
         <a
           id="applyBtn"
           href="https://forms.gle/46HDq1zzDjwmWujC9"
-          class="px-12 py-4 text-lg font-bold rounded-xl bg-black text-white hover:bg-gray-800 transition"
+          class="px-14 py-4 text-lg font-bold rounded-2xl bg-black text-white smooth lift glow btn-hover"
         >
           APPLY NOW
         </a>
@@ -71,8 +136,9 @@
     </div>
   </div>
 
-  <!-- ORDER MATTERS -->
+  <!-- SCRIPTS (ORDER MATTERS) -->
   <script src="settings.js"></script>
   <script src="app.js"></script>
+
 </body>
 </html>
