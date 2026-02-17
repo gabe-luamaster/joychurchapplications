@@ -1,28 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("teams");
-  const applyBtn = document.getElementById("applyBtn");
+  const container = document.getElementById("teams")
+  const applyBtn = document.getElementById("applyBtn")
 
-  if (!container || !window.APP_SETTINGS) return;
+  if (!container || !window.APP_SETTINGS) return
 
-  // 🔥 HARD RESET (no duplicates ever)
-  container.innerHTML = "";
+  // HARD RESET
+  container.innerHTML = ""
 
   // Global applications toggle
   if (!APP_SETTINGS.applicationsOpen) {
-    applyBtn.textContent = "Applications Closed";
-    applyBtn.classList.add("opacity-50", "pointer-events-none");
-    applyBtn.removeAttribute("href");
+    applyBtn.textContent = "Applications Closed"
+    applyBtn.classList.add("opacity-50", "pointer-events-none")
+    applyBtn.removeAttribute("href")
   }
 
   APP_SETTINGS.teams.forEach(team => {
     const statusClass =
       team.status === "Open"
         ? "bg-green-100 text-green-700"
-        : "bg-red-100 text-red-700";
+        : "bg-red-100 text-red-700"
 
     const requirementsHTML = team.requirements
       ? `<p class="text-sm text-gray-600"><strong>Requirements:</strong> ${team.requirements}</p>`
-      : "";
+      : ""
 
     const subteamsHTML = team.subteams
       ? `
@@ -45,12 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("")}
         </div>
       `
-      : "";
+      : ""
 
     container.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="border rounded-lg p-4 flex justify-between items-start text-black">
+      <div class="team-card border rounded-lg p-4 flex justify-between items-start text-black smooth">
         <div>
           <h2 class="text-lg font-semibold">${team.name}</h2>
           <p class="text-sm text-gray-600 mt-1">
@@ -68,6 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </span>
       </div>
       `
-    );
-  });
-});
+    )
+  })
+})
