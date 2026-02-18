@@ -32,9 +32,10 @@ window.APP_SETTINGS = {
     },
     {
       name: "Creative Department",
-      leaders: ["LawnPro"],
+      leaders: ["Cesar"],
       description:
         "The Creative Department designs, builds, and organizes the Joy Church campus, helping bring the JCI vision to life. This team focuses on creating an engaging and immersive virtual environment for Joy Church International.",
+      requirements: "Must have access to a PC/Laptop to apply.",
       status: "Open"
     },
     {
@@ -42,8 +43,8 @@ window.APP_SETTINGS = {
       leaders: ["Joey"],
       description:
         "The Media Team at Joy Church International creates and manages digital content, including graphics, announcements, and promotional materials. Their work helps share the mission and message of JCI across platforms.",
-      requirements: "Must have access to a PC to apply.",
-      status: "Open"
+      requirements: "Must have access to a PC/Laptop to apply.",
+      status: "Closed"
     },
     {
       name: "Ministerial Team",
