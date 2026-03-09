@@ -1,144 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Joy Church Applications</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Joy Church Applications</title>
 
-  <!-- Montserrat -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<style>
 
-  <style>
-    body {
-      font-family: "Montserrat", sans-serif;
-    }
+body{
+font-family:"Montserrat",sans-serif;
+}
 
-    /* GLOBAL TRANSITIONS */
-    .smooth {
-      transition: all 0.35s ease;
-    }
+.smooth{
+transition:all .35s ease;
+}
 
-    /* CARD LIFT */
-    .lift:hover {
-      transform: translateY(-8px) scale(1.01);
-      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
-    }
+.lift:hover{
+transform:translateY(-8px) scale(1.01);
+box-shadow:0 30px 60px rgba(0,0,0,0.35);
+}
 
-    /* SOFT GLOW */
-    .glow:hover {
-      box-shadow: 0 0 35px rgba(255,255,255,0.4);
-    }
+.glow:hover{
+box-shadow:0 0 35px rgba(255,255,255,0.4);
+}
 
-    /* FADE IN */
-    .fade-in {
-      animation: fadeIn 0.8s ease forwards;
-    }
+.fade-in{
+animation:fadeIn .8s ease forwards;
+}
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
 
-    /* BUTTON RIPPLE FEEL */
-    .btn-hover {
-      position: relative;
-      overflow: hidden;
-    }
+.team-card{
+background:rgba(255,255,255,.75);
+border-radius:1rem;
+padding:1.25rem;
+cursor:pointer;
+}
 
-    .btn-hover::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+.team-card:hover{
+transform:translateY(-6px) scale(1.02);
+box-shadow:0 25px 45px rgba(0,0,0,0.3);
+}
 
-    .btn-hover:hover::after {
-      opacity: 1;
-    }
-
-    /* TEAM CARD HOVER (used by JS) */
-    .team-card {
-      background: rgba(255,255,255,0.75);
-      border-radius: 1rem;
-      padding: 1.25rem;
-    }
-
-    .team-card:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 25px 45px rgba(0,0,0,0.3);
-    }
-  </style>
+</style>
 </head>
 
-<body
-  class="min-h-screen bg-cover bg-center bg-no-repeat"
-  style="background-image: url('https://i.imgur.com/ZN36YN0.png');"
->
-  <!-- DARK OVERLAY -->
-  <div class="min-h-screen bg-black/65 py-12 fade-in">
+<body class="min-h-screen bg-cover bg-center bg-no-repeat"
+style="background-image:url('https://i.imgur.com/ZN36YN0.png');">
 
-    <!-- MAIN CONTAINER -->
-    <div class="max-w-4xl mx-auto bg-white/60 rounded-2xl shadow-xl p-8 smooth lift">
+<div class="min-h-screen bg-black/65 py-12 fade-in">
 
-      <!-- TITLE -->
-      <h1 class="text-3xl font-bold text-center mb-6 text-white drop-shadow-lg">
-        Joy Church Application Website
-      </h1>
+<div class="max-w-4xl mx-auto bg-white/60 rounded-2xl shadow-xl p-8 smooth lift">
 
-      <!-- IMPORTANT NOTICE -->
-      <div class="mb-8 p-5 rounded-xl bg-yellow-100/95 border border-yellow-300 text-yellow-900 space-y-3 smooth lift">
-        <p class="font-bold text-lg flex items-center gap-2">
-          ⚠️ IMPORTANT — PLEASE READ BEFORE APPLYING
-        </p>
+<h1 class="text-3xl font-bold text-center mb-6 text-white drop-shadow-lg">
+Joy Church Application Website
+</h1>
 
-        <ul class="list-disc pl-5 text-sm space-y-1">
-          <li>
-            <strong>Do NOT use artificial intelligence</strong> in your application.
-            Doing so will result in a <strong>blacklist from all teams</strong>.
-          </li>
-          <li>
-            If you are Applying for Ministerial Department, <strong>YOU WIIL HAVE TO DM GABE</strong> For a Seprate Application.
-          </li>
-          <li>
-            <strong>Please allow up to 72 hours</strong> for review.
-          </li>
-        </ul>
-      </div>
+<div class="mb-8 p-5 rounded-xl bg-yellow-100/95 border border-yellow-300 text-yellow-900 space-y-3 smooth lift">
 
-      <!-- TEAMS -->
-      <div
-        id="teams"
-        class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in"
-      ></div>
+<p class="font-bold text-lg">
+⚠️ IMPORTANT — PLEASE READ BEFORE APPLYING
+</p>
 
-      <!-- APPLY BUTTON -->
-      <div class="mt-12 flex justify-center">
-        <a
-          id="applyBtn"
-          href="https://forms.gle/46HDq1zzDjwmWujC9"
-          class="px-14 py-4 text-lg font-bold rounded-2xl bg-black text-white smooth lift glow btn-hover"
-        >
-          APPLY NOW
-        </a>
-      </div>
+<ul class="list-disc pl-5 text-sm space-y-1">
 
-    </div>
-  </div>
+<li>
+<strong>Do NOT use artificial intelligence</strong> in your application.
+Doing so will result in a <strong>blacklist from all teams</strong>.
+</li>
 
-  <!-- SCRIPTS (ORDER MATTERS) -->
-  <script src="settings.js"></script>
-  <script src="app.js"></script>
+<li>
+If you are applying for Ministerial Department,
+<strong>DM GABE</strong> for a separate application.
+</li>
+
+<li>
+<strong>Please allow up to 72 hours</strong> for review.
+</li>
+
+</ul>
+
+</div>
+
+<div id="teams"
+class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in"></div>
+
+</div>
+</div>
+
+<script src="settings.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
