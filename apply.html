@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
@@ -12,106 +13,160 @@
 
 body{
 font-family:"Montserrat",sans-serif;
-background:linear-gradient(135deg,#0f172a,#1e3a8a);
+background:linear-gradient(135deg,#0f172a,#1e40af);
 min-height:100vh;
 display:flex;
 align-items:center;
 justify-content:center;
+padding:40px;
+}
+
+.container{
+width:100%;
+max-width:700px;
 }
 
 .card{
 background:white;
-border-radius:20px;
-padding:40px;
-max-width:650px;
-width:95%;
-box-shadow:0 30px 80px rgba(0,0,0,.5);
+border-radius:18px;
+padding:35px;
+box-shadow:0 25px 60px rgba(0,0,0,.4);
 }
 
 input,textarea,select{
 
 width:100%;
-padding:12px;
-border-radius:10px;
+padding:10px;
+border-radius:8px;
 border:1px solid #ddd;
-transition:.3s;
+font-size:14px;
+transition:.25s;
+
 }
 
 input:focus,textarea:focus,select:focus{
 
 outline:none;
 border-color:#2563eb;
-box-shadow:0 0 12px rgba(37,99,235,.7);
+box-shadow:0 0 10px rgba(37,99,235,.6);
+
 }
 
 .slider{
+
 display:flex;
 width:300%;
-transition:.5s;
+transition:.45s;
+
 }
 
 .page{
+
 width:100%;
 flex-shrink:0;
-padding-right:10px;
+padding-right:6px;
+
 }
 
 .progress{
+
 height:6px;
 background:#e5e7eb;
-border-radius:10px;
+border-radius:6px;
 overflow:hidden;
-margin-bottom:25px;
+margin-bottom:22px;
+
 }
 
 .bar{
+
 height:100%;
 width:33%;
 background:#2563eb;
-transition:.5s;
+transition:.4s;
+
 }
 
 .btn{
-padding:12px 20px;
-border-radius:10px;
+
+padding:10px;
+border-radius:8px;
 font-weight:600;
+font-size:14px;
+
 }
 
 .next{
+
 background:#2563eb;
 color:white;
+
 }
 
 .back{
+
 background:#e5e7eb;
+
+}
+
+.scale{
+
+display:grid;
+grid-template-columns:repeat(10,1fr);
+gap:5px;
+margin-top:8px;
+
+}
+
+.scale label{
+
+background:#f3f4f6;
+padding:6px;
+border-radius:6px;
+text-align:center;
+cursor:pointer;
+font-size:12px;
+
+}
+
+.scale label:hover{
+
+background:#dbeafe;
+
 }
 
 .success{
+
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,.6);
+background:rgba(0,0,0,.65);
 display:flex;
 align-items:center;
 justify-content:center;
 opacity:0;
 pointer-events:none;
-transition:.4s;
+transition:.3s;
+
 }
 
 .success.show{
+
 opacity:1;
 pointer-events:auto;
+
 }
 
 .successBox{
+
 background:white;
-padding:50px;
-border-radius:20px;
+padding:40px;
+border-radius:18px;
 text-align:center;
-animation:pop .5s ease;
+animation:pop .4s ease;
+
 }
 
 @keyframes pop{
@@ -128,34 +183,17 @@ opacity:1;
 
 }
 
-.scale{
-display:grid;
-grid-template-columns:repeat(10,1fr);
-gap:6px;
-margin-top:10px;
-}
-
-.scale label{
-background:#f3f4f6;
-padding:8px;
-border-radius:8px;
-text-align:center;
-cursor:pointer;
-}
-
-.scale label:hover{
-background:#dbeafe;
-}
-
 </style>
 
 </head>
 
 <body>
 
+<div class="container">
+
 <div class="card">
 
-<h1 id="teamTitle" class="text-2xl font-bold mb-4"></h1>
+<h1 id="teamTitle" class="text-xl font-bold mb-4"></h1>
 
 <div class="progress">
 <div id="progressBar" class="bar"></div>
@@ -169,7 +207,7 @@ background:#dbeafe;
 
 <div class="page space-y-4">
 
-<h2 class="font-semibold text-lg">Personal Preferences</h2>
+<h2 class="font-semibold">Personal Preferences</h2>
 
 <input placeholder="Preferred Name">
 
@@ -194,10 +232,10 @@ Next
 
 <div class="page space-y-4">
 
-<h2 class="font-semibold text-lg">Main Form</h2>
+<h2 class="font-semibold">Main Form</h2>
 
 <p class="text-sm">
-How likely are you able to attend service? (5pm-5:55pm EST)
+How likely are you able to attend service (1-10)?
 </p>
 
 <div class="scale">
@@ -215,13 +253,13 @@ How likely are you able to attend service? (5pm-5:55pm EST)
 
 </div>
 
-<textarea placeholder="Tell us why you feel qualified for this role (2-7 sentences). PLEASE DO NOT USE AI"></textarea>
+<textarea placeholder="Tell us why you feel qualified for this role (2-7 sentences)"></textarea>
 
-<textarea placeholder="List all reasons why you may not be able to attend service"></textarea>
+<textarea placeholder="List all reasons you may not attend service"></textarea>
 
 <div id="extraQuestions"></div>
 
-<div class="flex gap-4">
+<div class="flex gap-3">
 
 <button onclick="prevPage()" class="btn back w-full">
 Back
@@ -239,17 +277,9 @@ Next
 
 <div class="page space-y-4">
 
-<h2 class="font-semibold text-lg">Agreements</h2>
+<h2 class="font-semibold">Agreements</h2>
 
-<label>Do you agree that if you are ranked you cannot abuse admin?</label>
-
-<select>
-<option>Yes</option>
-<option>No</option>
-<option>Maybe</option>
-</select>
-
-<label>Are you comfortable working with others or by yourself?</label>
+<label>Agree not to abuse admin?</label>
 
 <select>
 <option>Yes</option>
@@ -257,7 +287,7 @@ Next
 <option>Maybe</option>
 </select>
 
-<label>Will you attend mandatory training?</label>
+<label>Comfortable working alone or with others?</label>
 
 <select>
 <option>Yes</option>
@@ -265,7 +295,7 @@ Next
 <option>Maybe</option>
 </select>
 
-<label>Do you agree with JCI, Roblox, and Discord TOS?</label>
+<label>Will attend mandatory training?</label>
 
 <select>
 <option>Yes</option>
@@ -273,7 +303,15 @@ Next
 <option>Maybe</option>
 </select>
 
-<div class="flex gap-4">
+<label>Agree with JCI, Roblox, Discord TOS?</label>
+
+<select>
+<option>Yes</option>
+<option>No</option>
+<option>Maybe</option>
+</select>
+
+<div class="flex gap-3">
 
 <button onclick="prevPage()" class="btn back w-full">
 Back
@@ -293,18 +331,20 @@ Submit
 
 </div>
 
+</div>
+
 <div id="success" class="success">
 
 <div class="successBox">
 
-<div class="text-5xl mb-3">✔</div>
+<div class="text-4xl mb-2">✔</div>
 
-<h2 class="text-xl font-bold">
+<h2 class="font-bold">
 Application Submitted
 </h2>
 
-<p class="text-gray-600">
-Please allow up to 72 hours for review.
+<p class="text-gray-600 text-sm">
+Please allow up to 72 hours for review
 </p>
 
 </div>
@@ -327,15 +367,19 @@ progress.style.width=(page+1)*33+"%"
 
 function nextPage(){
 
+if(page<2){
 page++
 update()
+}
 
 }
 
 function prevPage(){
 
+if(page>0){
 page--
 update()
+}
 
 }
 
@@ -346,42 +390,34 @@ document.getElementById("success").classList.add("show")
 }
 
 const params=new URLSearchParams(window.location.search)
-const team=params.get("team")
+const team=(params.get("team") || "").toLowerCase()
 
-document.getElementById("teamTitle").textContent=
-team+" Application"
+document.getElementById("teamTitle").textContent =
+params.get("team")+" Application"
 
 const extra=document.getElementById("extraQuestions")
 
-if(team==="Security Team"){
+if(team.includes("security")){
 
-extra.innerHTML=`
-<textarea placeholder="How would you handle a disruptive player during service?"></textarea>
-`
+extra.innerHTML=`<textarea placeholder="How would you handle a disruptive player during service?"></textarea>`
 
 }
 
-if(team==="Worship Team"){
+if(team.includes("worship")){
 
-extra.innerHTML=`
-<input placeholder="What instrument or worship role do you serve?">
-`
+extra.innerHTML=`<input placeholder="What instrument or worship role do you serve?">`
 
 }
 
-if(team==="Production Team"){
+if(team.includes("production")){
 
-extra.innerHTML=`
-<input placeholder="What production software do you use?">
-`
+extra.innerHTML=`<input placeholder="What production software do you use?">`
 
 }
 
-if(team==="Creative Department"){
+if(team.includes("creative")){
 
-extra.innerHTML=`
-<textarea placeholder="Describe your building/design experience"></textarea>
-`
+extra.innerHTML=`<textarea placeholder="Describe your building/design experience"></textarea>`
 
 }
 
