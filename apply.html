@@ -20,7 +20,6 @@ body {
     padding: 20px;
 }
 
-/* CARD */
 .container {
     width: 100%;
     max-width: 700px;
@@ -33,7 +32,7 @@ body {
     box-shadow: 0 25px 60px rgba(0, 0, 0, .4);
 }
 
-/* INPUTS & TEXTAREAS */
+/* Inputs */
 input, textarea, select {
     width: 100%;
     padding: 16px 16px !important;
@@ -56,7 +55,7 @@ input:focus, textarea:focus, select:focus {
     box-shadow: 0 0 10px rgba(0, 229, 255, .4);
 }
 
-/* BUTTONS */
+/* Buttons */
 button {
     padding: 12px 0 !important;
     font-size: 15px !important;
@@ -75,26 +74,41 @@ button.back {
     color: white;
 }
 
-/* SCALE (1-10) */
+/* SLIDER FIX */
+.page {
+    min-width: 100%;
+}
+
+/* SCALE */
 .scale {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    gap: 5px;
-    margin-top: 8px;
+    gap: 8px;
 }
 
-.scale label {
+.scaleItem {
     background: #f0f4ff;
-    padding: 10px 0;
-    border-radius: 6px;
+    padding: 12px 0;
+    border-radius: 8px;
     text-align: center;
     cursor: pointer;
-    font-size: 13px;
+    font-weight: 600;
     transition: .2s;
+    border: 1px solid #2563eb;
 }
 
-.scale label:hover {
+.scaleItem:hover {
     background: #dbeafe;
+}
+
+.scaleItem input {
+    display: none;
+}
+
+.scaleItem.selected {
+    background: #00e5ff;
+    border-color: #00e5ff;
+    color: black;
 }
 
 /* SUCCESS POPUP */
@@ -131,7 +145,6 @@ button.back {
         transform: scale(.6);
         opacity: 0;
     }
-
     to {
         transform: scale(1);
         opacity: 1;
@@ -148,7 +161,7 @@ button.back {
 
         <h1 id="teamTitle" class="text-2xl font-bold mb-4"></h1>
 
-        <div class="progress">
+        <div class="progress mb-4">
             <div id="progressBar" class="h-2 w-1/3 bg-cyan-400 rounded"></div>
         </div>
 
@@ -156,7 +169,7 @@ button.back {
             <div id="slider" class="flex transition-transform duration-500">
 
                 <!-- PAGE 1 -->
-                <div class="page w-full flex flex-col space-y-4">
+                <div class="page flex flex-col space-y-4">
                     <h2 class="font-semibold text-lg">Personal Preferences</h2>
 
                     <input placeholder="Preferred Name">
@@ -171,27 +184,26 @@ button.back {
                     <input placeholder="Roblox Username (ex: @gabriel_lovesjesus)">
                     <input placeholder="Discord Username (ex: @gabriel_lovesjesus)">
 
-                    <button type="button" onclick="nextPage()" class="next">
-                        Next
-                    </button>
+                    <button type="button" onclick="nextPage()" class="next">Next</button>
                 </div>
 
                 <!-- PAGE 2 -->
-                <div class="page w-full flex flex-col space-y-4">
+                <div class="page flex flex-col space-y-4">
                     <h2 class="font-semibold text-lg">Main Form</h2>
 
                     <p class="text-sm">How likely are you able to attend service (1-10)?</p>
-                    <div class="scale">
-                        <label>1<input type="radio" name="scale"></label>
-                        <label>2<input type="radio" name="scale"></label>
-                        <label>3<input type="radio" name="scale"></label>
-                        <label>4<input type="radio" name="scale"></label>
-                        <label>5<input type="radio" name="scale"></label>
-                        <label>6<input type="radio" name="scale"></label>
-                        <label>7<input type="radio" name="scale"></label>
-                        <label>8<input type="radio" name="scale"></label>
-                        <label>9<input type="radio" name="scale"></label>
-                        <label>10<input type="radio" name="scale"></label>
+
+                    <div class="scale" id="scaleContainer">
+                        <label class="scaleItem"><input type="radio" name="scale" value="1">1</label>
+                        <label class="scaleItem"><input type="radio" name="scale" value="2">2</label>
+                        <label class="scaleItem"><input type="radio" name="scale" value="3">3</label>
+                        <label class="scaleItem"><input type="radio" name="scale" value="4">4</label>
+                        <label class="scaleItem"><input type="radio" name="scale" value="5">5</label>
+                        <label class="scaleItem"><input type="radio" name="scale" value="6">6</label>
+                        <label class="scaleItem"><input type="radio" name="scale" value="7">7</label>
+                        <label class="scaleItem"><input type="radio" name="scale" value="8">8</label>
+                        <label class="scaleItem"><input type="radio" name="scale" value="9">9</label>
+                        <label class="scaleItem"><input type="radio" name="scale" value="10">10</label>
                     </div>
 
                     <textarea placeholder="Tell us why you feel qualified for this role (2-7 sentences)"></textarea>
@@ -206,7 +218,7 @@ button.back {
                 </div>
 
                 <!-- PAGE 3 -->
-                <div class="page w-full flex flex-col space-y-4">
+                <div class="page flex flex-col space-y-4">
                     <h2 class="font-semibold text-lg">Agreements</h2>
 
                     <label>Agree not to abuse admin?</label>
@@ -264,7 +276,7 @@ const progress = document.getElementById("progressBar")
 
 function update() {
     slider.style.transform = `translateX(-${page * 100}%)`
-    progress.style.width = `${(page + 1) * 33}%`
+    progress.style.width = `${((page + 1) / 3) * 100}%`
 }
 
 function nextPage() {
@@ -285,22 +297,31 @@ function submitForm() {
     document.getElementById("success").classList.add("show")
 }
 
-// Extra team-specific questions
+/* SCALE SELECTION */
+document.querySelectorAll(".scaleItem").forEach(item => {
+    item.addEventListener("click", () => {
+        document.querySelectorAll(".scaleItem").forEach(i => i.classList.remove("selected"))
+        item.classList.add("selected")
+    })
+})
+
+/* TEAM-SPECIFIC QUESTIONS */
 const params = new URLSearchParams(window.location.search)
-const team = (params.get("team") || "").toLowerCase()
-document.getElementById("teamTitle").textContent = params.get("team") + " Application"
+const rawTeam = params.get("team")
+const team = (rawTeam || "").toLowerCase()
+
+document.getElementById("teamTitle").textContent =
+    rawTeam ? `${rawTeam} Application` : "Application Form"
 
 const extra = document.getElementById("extraQuestions")
+
 if (team.includes("security")) {
     extra.innerHTML = `<textarea placeholder="How would you handle a disruptive player during service?"></textarea>`
-}
-if (team.includes("worship")) {
+} else if (team.includes("worship")) {
     extra.innerHTML = `<input placeholder="What instrument or worship role do you serve?">`
-}
-if (team.includes("production")) {
+} else if (team.includes("production")) {
     extra.innerHTML = `<input placeholder="What production software do you use?">`
-}
-if (team.includes("creative")) {
+} else if (team.includes("creative")) {
     extra.innerHTML = `<textarea placeholder="Describe your building/design experience"></textarea>`
 }
 </script>
