@@ -10,177 +10,166 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-
 body{
-font-family:"Montserrat",sans-serif;
-background:linear-gradient(135deg,#0f172a,#1e40af);
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:40px;
+    font-family:"Montserrat",sans-serif;
+    background:linear-gradient(135deg,#0f172a,#1e40af);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
 }
 
+/* CONTAINER & CARD */
 .container{
-width:100%;
-max-width:700px;
+    width:100%;
+    max-width:700px;
 }
 
 .card{
-background:white;
-border-radius:18px;
-padding:35px;
-box-shadow:0 25px 60px rgba(0,0,0,.4);
+    background:white;
+    border-radius:18px;
+    padding:35px;
+    box-shadow:0 25px 60px rgba(0,0,0,.4);
 }
 
-input,textarea,select{
-
-width:100%;
-padding:10px;
-border-radius:8px;
-border:1px solid #ddd;
-font-size:14px;
-transition:.25s;
-
+/* INPUTS */
+input, textarea, select{
+    width:100%;
+    padding:14px 16px;
+    border-radius:10px;
+    border:1px solid #2563eb;
+    font-size:15px;
+    transition:.25s;
+    background:#f0f4ff;
 }
 
 input:focus,textarea:focus,select:focus{
-
-outline:none;
-border-color:#2563eb;
-box-shadow:0 0 10px rgba(37,99,235,.6);
-
+    outline:none;
+    border-color:#00e5ff;
+    box-shadow:0 0 10px rgba(0,229,255,.4);
 }
 
+/* TEXTAREA SIZE */
+textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+/* SLIDER */
 .slider{
-
-display:flex;
-width:300%;
-transition:.45s;
-
+    display:flex;
+    width:300%;
+    transition:.45s;
 }
 
 .page{
-
-width:100%;
-flex-shrink:0;
-padding-right:6px;
-
+    width:100%;
+    flex-shrink:0;
+    padding-right:8px;
 }
 
+/* PROGRESS BAR */
 .progress{
-
-height:6px;
-background:#e5e7eb;
-border-radius:6px;
-overflow:hidden;
-margin-bottom:22px;
-
+    height:6px;
+    background:#e5e7eb;
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:22px;
 }
 
 .bar{
-
-height:100%;
-width:33%;
-background:#2563eb;
-transition:.4s;
-
+    height:100%;
+    width:33%;
+    background:#00e5ff;
+    transition:.4s;
 }
 
-.btn{
-
-padding:10px;
-border-radius:8px;
-font-weight:600;
-font-size:14px;
-
-}
-
-.next{
-
-background:#2563eb;
-color:white;
-
-}
-
-.back{
-
-background:#e5e7eb;
-
-}
-
+/* SCALE QUESTIONS (1-10) */
 .scale{
-
-display:grid;
-grid-template-columns:repeat(10,1fr);
-gap:5px;
-margin-top:8px;
-
+    display:grid;
+    grid-template-columns:repeat(10,1fr);
+    gap:5px;
+    margin-top:8px;
 }
 
 .scale label{
-
-background:#f3f4f6;
-padding:6px;
-border-radius:6px;
-text-align:center;
-cursor:pointer;
-font-size:12px;
-
+    background:#f0f4ff;
+    padding:8px 0;
+    border-radius:6px;
+    text-align:center;
+    cursor:pointer;
+    font-size:13px;
+    transition:.2s;
 }
 
 .scale label:hover{
-
-background:#dbeafe;
-
+    background:#dbeafe;
 }
 
+/* BUTTONS */
+.btn{
+    padding:12px;
+    border-radius:10px;
+    font-weight:600;
+    font-size:15px;
+    transition:.2s;
+}
+
+.next{
+    background:#00e5ff;
+    color:black;
+}
+
+.back{
+    background:#1e3a8a;
+    color:white;
+}
+
+/* BUTTON ROW */
+.flex.gap-3{
+    display:flex;
+    gap:12px;
+}
+
+/* SUCCESS POPUP */
 .success{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.65);
-display:flex;
-align-items:center;
-justify-content:center;
-opacity:0;
-pointer-events:none;
-transition:.3s;
-
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.65);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
 }
 
 .success.show{
-
-opacity:1;
-pointer-events:auto;
-
+    opacity:1;
+    pointer-events:auto;
 }
 
 .successBox{
-
-background:white;
-padding:40px;
-border-radius:18px;
-text-align:center;
-animation:pop .4s ease;
-
+    background:white;
+    padding:40px;
+    border-radius:18px;
+    text-align:center;
+    animation:pop .4s ease;
 }
 
 @keyframes pop{
-
-from{
-transform:scale(.6);
-opacity:0;
-}
-
-to{
-transform:scale(1);
-opacity:1;
-}
-
+    from{
+        transform:scale(.6);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
 }
 
 </style>
@@ -193,7 +182,7 @@ opacity:1;
 
 <div class="card">
 
-<h1 id="teamTitle" class="text-xl font-bold mb-4"></h1>
+<h1 id="teamTitle" class="text-2xl font-bold mb-4"></h1>
 
 <div class="progress">
 <div id="progressBar" class="bar"></div>
@@ -207,7 +196,7 @@ opacity:1;
 
 <div class="page space-y-4">
 
-<h2 class="font-semibold">Personal Preferences</h2>
+<h2 class="font-semibold text-lg">Personal Preferences</h2>
 
 <input placeholder="Preferred Name">
 
@@ -232,14 +221,13 @@ Next
 
 <div class="page space-y-4">
 
-<h2 class="font-semibold">Main Form</h2>
+<h2 class="font-semibold text-lg">Main Form</h2>
 
 <p class="text-sm">
 How likely are you able to attend service (1-10)?
 </p>
 
 <div class="scale">
-
 <label>1<input type="radio" name="scale"></label>
 <label>2<input type="radio" name="scale"></label>
 <label>3<input type="radio" name="scale"></label>
@@ -250,7 +238,6 @@ How likely are you able to attend service (1-10)?
 <label>8<input type="radio" name="scale"></label>
 <label>9<input type="radio" name="scale"></label>
 <label>10<input type="radio" name="scale"></label>
-
 </div>
 
 <textarea placeholder="Tell us why you feel qualified for this role (2-7 sentences)"></textarea>
@@ -277,7 +264,7 @@ Next
 
 <div class="page space-y-4">
 
-<h2 class="font-semibold">Agreements</h2>
+<h2 class="font-semibold text-lg">Agreements</h2>
 
 <label>Agree not to abuse admin?</label>
 
@@ -354,71 +341,50 @@ Please allow up to 72 hours for review
 <script>
 
 let page=0
-
 const slider=document.getElementById("slider")
 const progress=document.getElementById("progressBar")
 
 function update(){
-
-slider.style.transform=`translateX(-${page*100}%)`
-progress.style.width=(page+1)*33+"%"
-
+    slider.style.transform=`translateX(-${page*100}%)`
+    progress.style.width=(page+1)*33+"%"
 }
 
 function nextPage(){
-
-if(page<2){
-page++
-update()
-}
-
+    if(page<2){
+        page++
+        update()
+    }
 }
 
 function prevPage(){
-
-if(page>0){
-page--
-update()
-}
-
+    if(page>0){
+        page--
+        update()
+    }
 }
 
 function submitForm(){
-
-document.getElementById("success").classList.add("show")
-
+    document.getElementById("success").classList.add("show")
 }
 
+// Team-specific extra questions
 const params=new URLSearchParams(window.location.search)
 const team=(params.get("team") || "").toLowerCase()
-
-document.getElementById("teamTitle").textContent =
-params.get("team")+" Application"
+document.getElementById("teamTitle").textContent = params.get("team")+" Application"
 
 const extra=document.getElementById("extraQuestions")
 
 if(team.includes("security")){
-
-extra.innerHTML=`<textarea placeholder="How would you handle a disruptive player during service?"></textarea>`
-
+    extra.innerHTML=`<textarea placeholder="How would you handle a disruptive player during service?"></textarea>`
 }
-
 if(team.includes("worship")){
-
-extra.innerHTML=`<input placeholder="What instrument or worship role do you serve?">`
-
+    extra.innerHTML=`<input placeholder="What instrument or worship role do you serve?">`
 }
-
 if(team.includes("production")){
-
-extra.innerHTML=`<input placeholder="What production software do you use?">`
-
+    extra.innerHTML=`<input placeholder="What production software do you use?">`
 }
-
 if(team.includes("creative")){
-
-extra.innerHTML=`<textarea placeholder="Describe your building/design experience"></textarea>`
-
+    extra.innerHTML=`<textarea placeholder="Describe your building/design experience"></textarea>`
 }
 
 </script>
