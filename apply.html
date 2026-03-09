@@ -3,58 +3,360 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Application</title>
+<title>JCI Application</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+body{
+font-family:"Montserrat",sans-serif;
+background:linear-gradient(135deg,#0f172a,#1e3a8a);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.card{
+background:white;
+border-radius:20px;
+padding:40px;
+max-width:650px;
+width:95%;
+box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+
+input,textarea,select{
+
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid #ddd;
+transition:.3s;
+}
+
+input:focus,textarea:focus,select:focus{
+
+outline:none;
+border-color:#2563eb;
+box-shadow:0 0 12px rgba(37,99,235,.7);
+}
+
+.slider{
+display:flex;
+width:300%;
+transition:.5s;
+}
+
+.page{
+width:100%;
+flex-shrink:0;
+padding-right:10px;
+}
+
+.progress{
+height:6px;
+background:#e5e7eb;
+border-radius:10px;
+overflow:hidden;
+margin-bottom:25px;
+}
+
+.bar{
+height:100%;
+width:33%;
+background:#2563eb;
+transition:.5s;
+}
+
+.btn{
+padding:12px 20px;
+border-radius:10px;
+font-weight:600;
+}
+
+.next{
+background:#2563eb;
+color:white;
+}
+
+.back{
+background:#e5e7eb;
+}
+
+.success{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+display:flex;
+align-items:center;
+justify-content:center;
+opacity:0;
+pointer-events:none;
+transition:.4s;
+}
+
+.success.show{
+opacity:1;
+pointer-events:auto;
+}
+
+.successBox{
+background:white;
+padding:50px;
+border-radius:20px;
+text-align:center;
+animation:pop .5s ease;
+}
+
+@keyframes pop{
+
+from{
+transform:scale(.6);
+opacity:0;
+}
+
+to{
+transform:scale(1);
+opacity:1;
+}
+
+}
+
+.scale{
+display:grid;
+grid-template-columns:repeat(10,1fr);
+gap:6px;
+margin-top:10px;
+}
+
+.scale label{
+background:#f3f4f6;
+padding:8px;
+border-radius:8px;
+text-align:center;
+cursor:pointer;
+}
+
+.scale label:hover{
+background:#dbeafe;
+}
+
+</style>
 
 </head>
 
-<body class="bg-gray-100 p-10">
+<body>
 
-<div class="max-w-xl mx-auto bg-white p-8 rounded-xl shadow">
+<div class="card">
 
-<h1 id="teamTitle"
-class="text-2xl font-bold mb-6"></h1>
+<h1 id="teamTitle" class="text-2xl font-bold mb-4"></h1>
 
-<form class="space-y-4">
+<div class="progress">
+<div id="progressBar" class="bar"></div>
+</div>
 
-<input placeholder="Preferred Name"
-class="border p-2 w-full rounded">
+<div class="overflow-hidden">
 
-<input placeholder="Roblox Username"
-class="border p-2 w-full rounded">
+<div id="slider" class="slider">
 
-<input placeholder="Discord Username"
-class="border p-2 w-full rounded">
+<!-- PAGE 1 -->
 
-<textarea placeholder="Why are you qualified?"
-class="border p-2 w-full rounded"></textarea>
+<div class="page space-y-4">
+
+<h2 class="font-semibold text-lg">Personal Preferences</h2>
+
+<input placeholder="Preferred Name">
+
+<select>
+<option>Gender</option>
+<option>Male</option>
+<option>Female</option>
+<option>Prefer not to say</option>
+</select>
+
+<input placeholder="Roblox Username (ex: @gabriel_lovesjesus)">
+
+<input placeholder="Discord Username (ex: @gabriel_lovesjesus)">
+
+<button onclick="nextPage()" class="btn next w-full">
+Next
+</button>
+
+</div>
+
+<!-- PAGE 2 -->
+
+<div class="page space-y-4">
+
+<h2 class="font-semibold text-lg">Main Form</h2>
+
+<p class="text-sm">
+How likely are you able to attend service? (5pm-5:55pm EST)
+</p>
+
+<div class="scale">
+
+<label>1<input type="radio" name="scale"></label>
+<label>2<input type="radio" name="scale"></label>
+<label>3<input type="radio" name="scale"></label>
+<label>4<input type="radio" name="scale"></label>
+<label>5<input type="radio" name="scale"></label>
+<label>6<input type="radio" name="scale"></label>
+<label>7<input type="radio" name="scale"></label>
+<label>8<input type="radio" name="scale"></label>
+<label>9<input type="radio" name="scale"></label>
+<label>10<input type="radio" name="scale"></label>
+
+</div>
+
+<textarea placeholder="Tell us why you feel qualified for this role (2-7 sentences). PLEASE DO NOT USE AI"></textarea>
+
+<textarea placeholder="List all reasons why you may not be able to attend service"></textarea>
 
 <div id="extraQuestions"></div>
 
-<button class="bg-black text-white px-6 py-3 rounded">
-Submit Application
+<div class="flex gap-4">
+
+<button onclick="prevPage()" class="btn back w-full">
+Back
 </button>
 
-</form>
+<button onclick="nextPage()" class="btn next w-full">
+Next
+</button>
+
+</div>
+
+</div>
+
+<!-- PAGE 3 -->
+
+<div class="page space-y-4">
+
+<h2 class="font-semibold text-lg">Agreements</h2>
+
+<label>Do you agree that if you are ranked you cannot abuse admin?</label>
+
+<select>
+<option>Yes</option>
+<option>No</option>
+<option>Maybe</option>
+</select>
+
+<label>Are you comfortable working with others or by yourself?</label>
+
+<select>
+<option>Yes</option>
+<option>No</option>
+<option>Maybe</option>
+</select>
+
+<label>Will you attend mandatory training?</label>
+
+<select>
+<option>Yes</option>
+<option>No</option>
+<option>Maybe</option>
+</select>
+
+<label>Do you agree with JCI, Roblox, and Discord TOS?</label>
+
+<select>
+<option>Yes</option>
+<option>No</option>
+<option>Maybe</option>
+</select>
+
+<div class="flex gap-4">
+
+<button onclick="prevPage()" class="btn back w-full">
+Back
+</button>
+
+<button onclick="submitForm()" class="btn next w-full">
+Submit
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="success" class="success">
+
+<div class="successBox">
+
+<div class="text-5xl mb-3">✔</div>
+
+<h2 class="text-xl font-bold">
+Application Submitted
+</h2>
+
+<p class="text-gray-600">
+Please allow up to 72 hours for review.
+</p>
+
+</div>
 
 </div>
 
 <script>
 
-const params = new URLSearchParams(window.location.search)
-const team = params.get("team")
+let page=0
 
-document.getElementById("teamTitle").textContent =
-team + " Application"
+const slider=document.getElementById("slider")
+const progress=document.getElementById("progressBar")
 
-const extra = document.getElementById("extraQuestions")
+function update(){
+
+slider.style.transform=`translateX(-${page*100}%)`
+progress.style.width=(page+1)*33+"%"
+
+}
+
+function nextPage(){
+
+page++
+update()
+
+}
+
+function prevPage(){
+
+page--
+update()
+
+}
+
+function submitForm(){
+
+document.getElementById("success").classList.add("show")
+
+}
+
+const params=new URLSearchParams(window.location.search)
+const team=params.get("team")
+
+document.getElementById("teamTitle").textContent=
+team+" Application"
+
+const extra=document.getElementById("extraQuestions")
 
 if(team==="Security Team"){
 
 extra.innerHTML=`
-<textarea placeholder="How would you handle a disruptive player?"
-class="border p-2 w-full rounded"></textarea>
+<textarea placeholder="How would you handle a disruptive player during service?"></textarea>
 `
 
 }
@@ -62,8 +364,7 @@ class="border p-2 w-full rounded"></textarea>
 if(team==="Worship Team"){
 
 extra.innerHTML=`
-<input placeholder="What instrument or role do you serve?"
-class="border p-2 w-full rounded">
+<input placeholder="What instrument or worship role do you serve?">
 `
 
 }
@@ -71,8 +372,7 @@ class="border p-2 w-full rounded">
 if(team==="Production Team"){
 
 extra.innerHTML=`
-<input placeholder="What production software do you use?"
-class="border p-2 w-full rounded">
+<input placeholder="What production software do you use?">
 `
 
 }
@@ -80,8 +380,7 @@ class="border p-2 w-full rounded">
 if(team==="Creative Department"){
 
 extra.innerHTML=`
-<textarea placeholder="What building or design experience do you have?"
-class="border p-2 w-full rounded"></textarea>
+<textarea placeholder="Describe your building/design experience"></textarea>
 `
 
 }
