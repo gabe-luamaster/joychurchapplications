@@ -1,73 +1,66 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("teams")
-  const applyBtn = document.getElementById("applyBtn")
 
-  if (!container || !window.APP_SETTINGS) return
+const container = document.getElementById("teams")
 
-  // HARD RESET
-  container.innerHTML = ""
+if(!container || !window.APP_SETTINGS) return
 
-  // Global applications toggle
-  if (!APP_SETTINGS.applicationsOpen) {
-    applyBtn.textContent = "Applications Closed"
-    applyBtn.classList.add("opacity-50", "pointer-events-none")
-    applyBtn.removeAttribute("href")
-  }
+container.innerHTML=""
 
-  APP_SETTINGS.teams.forEach(team => {
-    const statusClass =
-      team.status === "Open"
-        ? "bg-green-100 text-green-700"
-        : "bg-red-100 text-red-700"
+APP_SETTINGS.teams.forEach(team=>{
 
-    const requirementsHTML = team.requirements
-      ? `<p class="text-sm text-gray-600"><strong>Requirements:</strong> ${team.requirements}</p>`
-      : ""
+const statusClass =
+team.status === "Open"
+? "bg-green-100 text-green-700"
+: "bg-red-100 text-red-700"
 
-    const subteamsHTML = team.subteams
-      ? `
-        <div class="mt-3 ml-4 border-l pl-4 space-y-2">
-          <p class="text-sm font-semibold text-gray-700">Sub-Teams</p>
-          ${team.subteams
-            .map(
-              sub => `
-              <div class="flex justify-between items-start text-sm">
-                <div>
-                  <p class="font-medium">${sub.name}</p>
-                  <p class="text-gray-600">${sub.description}</p>
-                </div>
-                <span class="px-3 py-1 rounded-full text-xs bg-red-100 text-red-700">
-                  ${sub.status}
-                </span>
-              </div>
-            `
-            )
-            .join("")}
-        </div>
-      `
-      : ""
+const requirementsHTML =
+team.requirements
+? `<p class="text-sm text-gray-600"><strong>Requirements:</strong> ${team.requirements}</p>`
+: ""
 
-    container.insertAdjacentHTML(
-      "beforeend",
-      `
-      <div class="team-card border rounded-lg p-4 flex justify-between items-start text-black smooth">
-        <div>
-          <h2 class="text-lg font-semibold">${team.name}</h2>
-          <p class="text-sm text-gray-600 mt-1">
-            <strong>Leaders:</strong> ${team.leaders.join(", ")}
-          </p>
-          <p class="text-sm text-gray-600">
-            <strong>Description:</strong> ${team.description}
-          </p>
-          ${requirementsHTML}
-          ${subteamsHTML}
-        </div>
+container.insertAdjacentHTML("beforeend",`
 
-        <span class="px-4 py-1 rounded-full text-sm ${statusClass}">
-          ${team.status}
-        </span>
-      </div>
-      `
-    )
-  })
+<div onclick="openApplication('${team.name}')"
+class="team-card border rounded-lg p-4 flex justify-between items-start text-black smooth">
+
+<div>
+
+<h2 class="text-lg font-semibold">${team.name}</h2>
+
+<p class="text-sm text-gray-600 mt-1">
+<strong>Leaders:</strong> ${team.leaders.join(", ")}
+</p>
+
+<p class="text-sm text-gray-600">
+<strong>Description:</strong> ${team.description}
+</p>
+
+${requirementsHTML}
+
+</div>
+
+<span class="px-4 py-1 rounded-full text-sm ${statusClass}">
+${team.status}
+</span>
+
+</div>
+
+`)
+
 })
+
+})
+
+function openApplication(teamName){
+
+const team = APP_SETTINGS.teams.find(t=>t.name===teamName)
+
+if(!team || team.status==="Closed"){
+alert("Applications for this team are currently closed.")
+return
+}
+
+window.location.href =
+"apply.html?team=" + encodeURIComponent(teamName)
+
+}
