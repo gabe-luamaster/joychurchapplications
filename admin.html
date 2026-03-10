@@ -5,41 +5,13 @@
 <title>JCI Admin Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
-
 <style>
-body {
-    font-family:"Montserrat",sans-serif;
-    background: linear-gradient(135deg,#0f172a,#1e40af);
-    min-height:100vh;
-    padding:20px;
-    color:white;
-}
-.container{
-    max-width:1200px;
-    margin:auto;
-}
-.card{
-    background:white;
-    color:black;
-    border-radius:18px;
-    padding:30px;
-    margin-bottom:20px;
-    box-shadow:0 20px 50px rgba(0,0,0,.4);
-}
-input,select,button{
-    padding:12px 10px;
-    border-radius:10px;
-    border:1px solid #2563eb;
-    font-size:15px;
-}
-button{
-    font-weight:600;
-    cursor:pointer;
-    transition:.2s;
-}
-button:hover{
-    opacity:.9;
-}
+body { font-family:"Montserrat",sans-serif; background: linear-gradient(135deg,#0f172a,#1e40af); min-height:100vh; padding:20px; color:white; }
+.container{ max-width:1200px; margin:auto; }
+.card{ background:white; color:black; border-radius:18px; padding:30px; margin-bottom:20px; box-shadow:0 20px 50px rgba(0,0,0,.4); }
+input,select,button{ padding:12px 10px; border-radius:10px; border:1px solid #2563eb; font-size:15px; }
+button{ font-weight:600; cursor:pointer; transition:.2s; }
+button:hover{ opacity:.9; }
 button.approve{background:#14b8a6;color:white;}
 button.deny{background:#ef4444;color:white;}
 button.logout{background:#1e3a8a;color:white;margin-bottom:20px;}
@@ -47,7 +19,6 @@ table{width:100%;border-collapse:collapse;}
 th,td{padding:10px;border:1px solid #ddd;text-align:left;}
 th{background:#2563eb;color:white;}
 </style>
-
 </head>
 <body>
 
@@ -56,199 +27,133 @@ th{background:#2563eb;color:white;}
 <!-- LOGIN -->
 <div id="loginCard" class="card">
     <h1 class="text-2xl font-bold mb-4">Admin Login</h1>
-
-    <input id="username" placeholder="Username" class="w-full mb-3">
+    <input type="text" id="username" placeholder="Enter username" class="w-full mb-2">
     <input type="password" id="passcode" placeholder="Enter passcode" class="w-full mb-3">
-
     <button onclick="login()" class="w-full">Login</button>
-
-    <p id="loginError" class="text-red-500 mt-2 hidden">Incorrect login!</p>
+    <p id="loginError" class="text-red-500 mt-2 hidden">Incorrect username or passcode!</p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="hidden">
+    <button onclick="logout()" class="logout">Logout</button>
+    <h1 class="text-2xl font-bold mb-4">Submitted Applications</h1>
 
-<button onclick="logout()" class="logout">Logout</button>
+    <label>Filter by Team:</label>
+    <select id="teamFilter" class="mb-4" onchange="renderTable()">
+        <option value="all">All Teams</option>
+    </select>
 
-<h1 class="text-2xl font-bold mb-4">Submitted Applications</h1>
-
-<label>Filter by Team:</label>
-<select id="teamFilter" class="mb-4">
-<option value="all">All Teams</option>
-</select>
-
-<table id="appsTable">
-
-<thead>
-<tr>
-<th>Team</th>
-<th>Name</th>
-<th>Roblox</th>
-<th>Discord</th>
-<th>Attendance</th>
-<th>Qualifications</th>
-<th>Extra Qs</th>
-<th>Agreements</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
-</thead>
-
-<tbody></tbody>
-
-</table>
+    <table id="appsTable">
+        <thead>
+            <tr>
+                <th>Team</th>
+                <th>Name</th>
+                <th>Roblox</th>
+                <th>Discord</th>
+                <th>Attendance</th>
+                <th>Qualifications</th>
+                <th>Unavailable</th>
+                <th>Agreements</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 </div>
 
 <script>
+const PASSCODE = "gabr123";
+const USERNAME = "jcistaff234";
+let applications = [];
+const SHEETDB_URL = "https://sheetdb.io/api/v1/0gowkb0zc5uc4";
 
-const API_URL = "https://sheetdb.io/api/v1/0gowkb0zc5uc4"
-
-const USERNAME = "jcistaff234"
-const PASSCODE = "gabr123"
-
-let applications = []
-
-/* LOGIN */
-
+// LOGIN / LOGOUT
 function login(){
-
-const user = document.getElementById("username").value
-const pass = document.getElementById("passcode").value
-
-if(user === USERNAME && pass === PASSCODE){
-
-document.getElementById("loginCard").classList.add("hidden")
-document.getElementById("dashboard").classList.remove("hidden")
-
-loadApplications()
-
-}else{
-
-document.getElementById("loginError").classList.remove("hidden")
-
+    const inputPass = document.getElementById("passcode").value;
+    const inputUser = document.getElementById("username").value;
+    if(inputPass===PASSCODE && inputUser===USERNAME){
+        document.getElementById("loginCard").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+        loadApplications();
+    } else {
+        document.getElementById("loginError").classList.remove("hidden");
+    }
 }
-
-}
-
-/* LOGOUT */
-
 function logout(){
-
-document.getElementById("loginCard").classList.remove("hidden")
-document.getElementById("dashboard").classList.add("hidden")
-
+    document.getElementById("loginCard").classList.remove("hidden");
+    document.getElementById("dashboard").classList.add("hidden");
 }
 
-/* LOAD APPLICATIONS FROM SHEETDB */
-
+// FETCH APPLICATIONS FROM SHEETDB
 async function loadApplications(){
-
-try{
-
-const res = await fetch(API_URL)
-applications = await res.json()
-
-populateTeams()
-renderTable()
-
-}catch(err){
-
-console.error("Failed loading applications",err)
-
+    try {
+        const res = await fetch(SHEETDB_URL);
+        const data = await res.json();
+        applications = data.map(a=>({
+            ...a,
+            source: "sheetdb"
+        }));
+        populateTeams();
+        renderTable();
+    } catch(err){
+        alert("Failed to load applications from SheetDB.");
+        console.error(err);
+    }
 }
 
-}
-
-/* POPULATE TEAM FILTER */
-
+// POPULATE TEAM FILTER
 function populateTeams(){
-
-const teamFilter = document.getElementById("teamFilter")
-
-const teams = [...new Set(applications.map(a=>a.team).filter(t=>t))]
-
-teamFilter.innerHTML =
-'<option value="all">All Teams</option>' +
-teams.map(t=>`<option value="${t}">${t}</option>`).join("")
-
+    const teamFilter = document.getElementById("teamFilter");
+    const teams = [...new Set(applications.map(a=>a.team).filter(t=>t))];
+    teamFilter.innerHTML = '<option value="all">All Teams</option>'+teams.map(t=>`<option value="${t}">${t}</option>`).join("");
 }
 
-/* RENDER TABLE */
-
+// RENDER TABLE
 function renderTable(){
-
-const filter = document.getElementById("teamFilter").value
-const tbody = document.querySelector("#appsTable tbody")
-
-tbody.innerHTML=""
-
-applications.forEach((a,index)=>{
-
-if(filter!=="all" && a.team!==filter) return
-
-const agreements =
-`TOS:${a.tos}, Comfort:${a.comfort}, Training:${a.training}, Admin:${a.adminAbuse}`
-
-const tr=document.createElement("tr")
-
-tr.innerHTML=`
-<td>${a.team||""}</td>
-<td>${a.preferredName||""}</td>
-<td>${a.roblox||""}</td>
-<td>${a.discord||""}</td>
-<td>${a.scale||""}</td>
-<td>${a.qualified||""}</td>
-<td>${a.unavailable||""}</td>
-<td>${agreements}</td>
-<td>${a.status||"Pending"}</td>
-<td>
-<button class="approve" onclick="approve(${index})">✔</button>
-<button class="deny" onclick="deny(${index})">✖</button>
-</td>
-`
-
-tbody.appendChild(tr)
-
-})
-
+    const filter = document.getElementById("teamFilter").value;
+    const tbody = document.querySelector("#appsTable tbody");
+    tbody.innerHTML = "";
+    applications.forEach((a,index)=>{
+        if(filter!=="all" && a.team!==filter) return;
+        const agreements = `TOS:${a.tos || ""}, Comfort:${a.comfort || ""}, Training:${a.training || ""}, Admin:${a.adminAbuse || ""}`;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${a.team || ""}</td>
+            <td>${a.preferredName || ""}</td>
+            <td>${a.roblox || ""}</td>
+            <td>${a.discord || ""}</td>
+            <td>${a.scale || ""}</td>
+            <td>${a.qualified || ""}</td>
+            <td>${a.unavailable || ""}</td>
+            <td>${agreements}</td>
+            <td>${a.status || "Pending"}</td>
+            <td>
+                <button class="approve" onclick="updateStatus(${index}, 'Approved')">✔</button>
+                <button class="deny" onclick="updateStatus(${index}, 'Denied')">✖</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
 }
 
-/* APPROVE */
+// UPDATE STATUS
+async function updateStatus(index, newStatus){
+    const app = applications[index];
+    app.status = newStatus;
+    renderTable();
 
-async function approve(index){
-
-const roblox = applications[index].roblox
-
-await fetch(`${API_URL}/roblox/${roblox}`,{
-method:"PATCH",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({ data:{ status:"Approved" } })
-})
-
-loadApplications()
-
+    try {
+        // Update SheetDB
+        await fetch(`${SHEETDB_URL}/team/${encodeURIComponent(app.team)}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data: { status: newStatus } })
+        });
+    } catch(err){
+        console.error("Failed to update SheetDB:", err);
+    }
 }
-
-/* DENY */
-
-async function deny(index){
-
-const roblox = applications[index].roblox
-
-await fetch(`${API_URL}/roblox/${roblox}`,{
-method:"PATCH",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({ data:{ status:"Denied" } })
-})
-
-loadApplications()
-
-}
-
-/* FILTER EVENT */
-
-document.getElementById("teamFilter").addEventListener("change",renderTable)
-
 </script>
 
 </body>
