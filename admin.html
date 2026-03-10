@@ -14,7 +14,7 @@ body {
     color:white;
 }
 .container{
-    max-width:1000px;
+    max-width:1200px;
     margin:auto;
 }
 .card{
@@ -45,10 +45,10 @@ button.logout{background:#1e3a8a;color:white;margin-bottom:20px;}
 table{width:100%;border-collapse:collapse;}
 th,td{padding:10px;border:1px solid #ddd;text-align:left;}
 th{background:#2563eb;color:white;}
-.hidden{display:none;}
 </style>
 </head>
 <body>
+
 <div class="container">
 
 <!-- PASSCODE LOGIN -->
@@ -89,13 +89,10 @@ th{background:#2563eb;color:white;}
 </div>
 
 <script>
-// PASSCODE
-const PASSCODE = "gabr123";
-
-// Application array
+const PASSCODE = "gabr123"; // CHANGE THIS TO YOUR SECRET
 let applications = [];
 
-// LOGIN
+// LOGIN/LOGOUT
 function login(){
     const input = document.getElementById("passcode").value;
     if(input === PASSCODE){
@@ -106,87 +103,81 @@ function login(){
         document.getElementById("loginError").classList.remove("hidden");
     }
 }
-
 function logout(){
     document.getElementById("loginCard").classList.remove("hidden");
     document.getElementById("dashboard").classList.add("hidden");
 }
 
-// FETCH + MERGE APPLICATIONS
-async function loadApplications(){
+// FETCH APPLICATIONS + MERGE
+async function loadApplications() {
     try {
         const res = await fetch('https://api.npoint.io/8c134d701d74f33e8026');
         const data = await res.json();
-        // merge with localStorage submissions
         const localApps = JSON.parse(localStorage.getItem("jciApps") || "[]");
-        applications = [...data, ...localApps];
+        applications = [...data.map(a=>({...a, source:"nPoint"})), ...localApps.map(a=>({...a, source:"local"}))];
         populateTeams();
         renderTable();
     } catch(err){
         console.error("Failed to load from nPoint:", err);
-        applications = JSON.parse(localStorage.getItem("jciApps") || "[]");
+        applications = JSON.parse(localStorage.getItem("jciApps") || "[]").map(a=>({...a, source:"local"}));
         populateTeams();
         renderTable();
     }
 }
 
-// Populate Team Filter
-function populateTeams(){
+// POPULATE TEAM FILTER
+function populateTeams() {
     const teamFilter = document.getElementById("teamFilter");
-    const teams = [...new Set(applications.map(a=>a.team))];
-    teamFilter.innerHTML = '<option value="all">All Teams</option>' + 
-        teams.map(t=>`<option value="${t}">${t}</option>`).join("");
+    const teams = [...new Set(applications.map(a=>a.team).filter(t=>t))];
+    teamFilter.innerHTML = '<option value="all">All Teams</option>' + teams.map(t=>`<option value="${t}">${t}</option>`).join("");
 }
 
-// Render Table
-function renderTable(){
+// RENDER TABLE
+function renderTable() {
     const filter = document.getElementById("teamFilter").value;
     const tbody = document.querySelector("#appsTable tbody");
     tbody.innerHTML = "";
     applications.forEach((a,index)=>{
-        if(filter !== "all" && a.team!==filter) return;
+        if(filter!=="all" && a.team!==filter) return;
+        const agreements = `TOS:${a.agreements.TOS}, Comfort:${a.agreements.comfort}, Training:${a.agreements.training}, AdminAbuse:${a.agreements.adminAbuse}`;
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${a.team}</td>
             <td>${a.preferredName}</td>
             <td>${a.roblox}</td>
             <td>${a.discord}</td>
-            <td>${a.scale || ''}</td>
+            <td>${a.scale}</td>
             <td>${a.qualified}</td>
             <td>${a.extra}</td>
+            <td>${agreements}</td>
+            <td>${a.status||'Pending'}</td>
             <td>
-                TOS: ${a.agreements?.TOS || ''}<br>
-                Comfort: ${a.agreements?.comfort || ''}<br>
-                Training: ${a.agreements?.training || ''}<br>
-                Admin Abuse: ${a.agreements?.adminAbuse || ''}
-            </td>
-            <td>${a.status || 'Pending'}</td>
-            <td>
-                <button class="approve" onclick="approve(${index})">✔</button>
-                <button class="deny" onclick="deny(${index})">✖</button>
+                ${a.source==="local" ? `<button class="approve" onclick="approve(${index})">✔</button>
+                <button class="deny" onclick="deny(${index})">✖</button>` : "nPoint"}
             </td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// Approve/Deny
+// APPROVE/DENY LOCAL APPLICATIONS
 function approve(index){
-    applications[index].status = "Approved";
+    applications[index].status="Approved";
     saveLocal();
     renderTable();
 }
-
 function deny(index){
-    applications[index].status = "Denied";
+    applications[index].status="Denied";
     saveLocal();
     renderTable();
 }
 
-// Save to localStorage
+// SAVE LOCAL ONLY
 function saveLocal(){
-    localStorage.setItem("jciApps", JSON.stringify(applications));
+    const localApps = applications.filter(a=>a.source==="local");
+    localStorage.setItem("jciApps", JSON.stringify(localApps));
 }
 </script>
+
 </body>
 </html>
