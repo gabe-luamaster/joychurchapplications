@@ -115,12 +115,24 @@ function saveApplication(app){
 }
 
 /* LOAD APPLICATIONS INTO TABLE */
-function loadApplications(){
-    const apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
-    const teamFilter = document.getElementById("teamFilter");
-    const teams = [...new Set(apps.map(a=>a.team))];
-    teamFilter.innerHTML = '<option value="all">All Teams</option>'+teams.map(t=>`<option value="${t}">${t}</option>`).join("");
-    renderTable();
+async function loadApplications(){
+    try {
+        const res = await fetch("https://www.npoint.io/docs/8c134d701d74f33e8026");
+        const apps = await res.json();
+
+        // Save in localStorage for easier manipulation in approve/deny
+        localStorage.setItem("jciApps", JSON.stringify(apps));
+
+        // Populate team filter
+        const teamFilter = document.getElementById("teamFilter");
+        const teams = [...new Set(apps.map(a=>a.team))];
+        teamFilter.innerHTML = '<option value="all">All Teams</option>' + teams.map(t => `<option value="${t}">${t}</option>`).join("");
+
+        renderTable();
+    } catch (err) {
+        alert("Failed to load applications from npoint.");
+        console.error(err);
+    }
 }
 
 function renderTable(){
