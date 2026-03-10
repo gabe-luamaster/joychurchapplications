@@ -294,8 +294,40 @@ function prevPage() {
     }
 }
 
-function submitForm() {
-    document.getElementById("success").classList.add("show")
+async function submitForm() {
+    // Collect all form data
+    const data = {
+        team: rawTeam || "Unknown",
+        preferredName: document.querySelector('input[placeholder="Preferred Name"]').value,
+        roblox: document.querySelector('input[placeholder^="Roblox"]').value,
+        discord: document.querySelector('input[placeholder^="Discord"]').value,
+        scale: document.querySelector('.scaleItem.selected input')?.value || "",
+        qualified: document.querySelectorAll('textarea')[0].value,
+        unavailable: document.querySelectorAll('textarea')[1].value,
+        extra: document.querySelector('#extraQuestions input, #extraQuestions textarea')?.value || "",
+        agreements: {
+            adminAbuse: document.querySelectorAll('select')[0].value,
+            comfort: document.querySelectorAll('select')[1].value,
+            training: document.querySelectorAll('select')[2].value,
+            TOS: document.querySelectorAll('select')[3].value
+        },
+        submittedAt: new Date().toISOString()
+    }
+
+    try {
+        // Send data to npoint
+        await fetch('https://api.npoint.io/8c134d701d74f33e8026', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+
+        // Show success popup
+        document.getElementById("success").classList.add("show")
+    } catch (err) {
+        alert("Failed to submit application. Try again later.")
+        console.error(err)
+    }
 }
 
 /* SCALE SELECTION */
