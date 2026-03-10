@@ -1,98 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>JCI Admin Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-body {
-    font-family:"Montserrat",sans-serif;
-    background: linear-gradient(135deg,#0f172a,#1e40af);
-    min-height:100vh;
-    padding:20px;
-    color:white;
-}
-.container{
-    max-width:1200px;
-    margin:auto;
-}
-.card{
-    background:white;
-    color:black;
-    border-radius:18px;
-    padding:30px;
-    margin-bottom:20px;
-    box-shadow:0 20px 50px rgba(0,0,0,.4);
-}
-input,select,button{
-    padding:12px 10px;
-    border-radius:10px;
-    border:1px solid #2563eb;
-    font-size:15px;
-}
-button{
-    font-weight:600;
-    cursor:pointer;
-    transition:.2s;
-}
-button:hover{
-    opacity:.9;
-}
-button.approve{background:#14b8a6;color:white;}
-button.deny{background:#ef4444;color:white;}
-button.logout{background:#1e3a8a;color:white;margin-bottom:20px;}
-table{width:100%;border-collapse:collapse;}
-th,td{padding:10px;border:1px solid #ddd;text-align:left;}
-th{background:#2563eb;color:white;}
-</style>
-</head>
-<body>
+const PASSCODE = "gabr123"; // Your admin passcode
+let applications = []; // Will hold all merged applications
 
-<div class="container">
-
-<!-- PASSCODE LOGIN -->
-<div id="loginCard" class="card">
-    <h1 class="text-2xl font-bold mb-4">Admin Login</h1>
-    <input type="password" id="passcode" placeholder="Enter passcode" class="w-full mb-3">
-    <button onclick="login()" class="w-full">Login</button>
-    <p id="loginError" class="text-red-500 mt-2 hidden">Incorrect passcode!</p>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard" class="hidden">
-    <button onclick="logout()" class="logout">Logout</button>
-    <h1 class="text-2xl font-bold mb-4">Submitted Applications</h1>
-
-    <label>Filter by Team:</label>
-    <select id="teamFilter" class="mb-4" onchange="renderTable()">
-        <option value="all">All Teams</option>
-    </select>
-
-    <table id="appsTable">
-        <thead>
-            <tr>
-                <th>Team</th>
-                <th>Name</th>
-                <th>Roblox</th>
-                <th>Discord</th>
-                <th>Attendance</th>
-                <th>Qualifications</th>
-                <th>Extra Qs</th>
-                <th>Agreements</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
-
-<script>
-const PASSCODE = "gabr123"; // CHANGE THIS TO YOUR SECRET
-let applications = [];
-
-// LOGIN/LOGOUT
+/* LOGIN / LOGOUT */
 function login(){
     const input = document.getElementById("passcode").value;
     if(input === PASSCODE){
@@ -103,43 +12,52 @@ function login(){
         document.getElementById("loginError").classList.remove("hidden");
     }
 }
+
 function logout(){
     document.getElementById("loginCard").classList.remove("hidden");
     document.getElementById("dashboard").classList.add("hidden");
 }
 
-// FETCH APPLICATIONS + MERGE
-async function loadApplications() {
+/* MERGE LOCAL AND REMOTE APPLICATIONS */
+async function loadApplications(){
     try {
+        // Fetch from nPoint
         const res = await fetch('https://api.npoint.io/8c134d701d74f33e8026');
-        const data = await res.json();
-        const localApps = JSON.parse(localStorage.getItem("jciApps") || "[]");
-        applications = [...data.map(a=>({...a, source:"nPoint"})), ...localApps.map(a=>({...a, source:"local"}))];
+        const remoteApps = await res.json();
+
+        // Get localStorage apps
+        const localApps = JSON.parse(localStorage.getItem("jciApps")||"[]");
+
+        // Merge: remote first, then local
+        applications = [...remoteApps, ...localApps];
+
         populateTeams();
         renderTable();
     } catch(err){
-        console.error("Failed to load from nPoint:", err);
-        applications = JSON.parse(localStorage.getItem("jciApps") || "[]").map(a=>({...a, source:"local"}));
+        alert("Failed to load applications from nPoint.");
+        console.error(err);
+        // Fallback: use localStorage only
+        applications = JSON.parse(localStorage.getItem("jciApps")||"[]");
         populateTeams();
         renderTable();
     }
 }
 
-// POPULATE TEAM FILTER
-function populateTeams() {
+/* POPULATE TEAM FILTER */
+function populateTeams(){
     const teamFilter = document.getElementById("teamFilter");
-    const teams = [...new Set(applications.map(a=>a.team).filter(t=>t))];
-    teamFilter.innerHTML = '<option value="all">All Teams</option>' + teams.map(t=>`<option value="${t}">${t}</option>`).join("");
+    const teams = [...new Set(applications.map(a=>a.team))];
+    teamFilter.innerHTML = '<option value="all">All Teams</option>' +
+        teams.map(t=>`<option value="${t}">${t}</option>`).join("");
 }
 
-// RENDER TABLE
-function renderTable() {
+/* RENDER TABLE */
+function renderTable(){
     const filter = document.getElementById("teamFilter").value;
     const tbody = document.querySelector("#appsTable tbody");
     tbody.innerHTML = "";
     applications.forEach((a,index)=>{
-        if(filter!=="all" && a.team!==filter) return;
-        const agreements = `TOS:${a.agreements.TOS}, Comfort:${a.agreements.comfort}, Training:${a.agreements.training}, AdminAbuse:${a.agreements.adminAbuse}`;
+        if(filter !== "all" && a.team !== filter) return;
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${a.team}</td>
@@ -149,35 +67,42 @@ function renderTable() {
             <td>${a.scale}</td>
             <td>${a.qualified}</td>
             <td>${a.extra}</td>
-            <td>${agreements}</td>
-            <td>${a.status||'Pending'}</td>
             <td>
-                ${a.source==="local" ? `<button class="approve" onclick="approve(${index})">✔</button>
-                <button class="deny" onclick="deny(${index})">✖</button>` : "nPoint"}
+                TOS: ${a.agreements?.TOS || ''}<br>
+                Comfort: ${a.agreements?.comfort || ''}<br>
+                Training: ${a.agreements?.training || ''}<br>
+                Admin: ${a.agreements?.adminAbuse || ''}
+            </td>
+            <td>${a.status || 'Pending'}</td>
+            <td>
+                <button class="approve" onclick="approve(${index})">✔</button>
+                <button class="deny" onclick="deny(${index})">✖</button>
             </td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// APPROVE/DENY LOCAL APPLICATIONS
+/* APPROVE / DENY FUNCTIONS */
 function approve(index){
-    applications[index].status="Approved";
+    applications[index].status = "Approved";
     saveLocal();
     renderTable();
 }
+
 function deny(index){
-    applications[index].status="Denied";
+    applications[index].status = "Denied";
     saveLocal();
     renderTable();
 }
 
-// SAVE LOCAL ONLY
+/* SAVE LOCAL MERGED DATA */
 function saveLocal(){
-    const localApps = applications.filter(a=>a.source==="local");
-    localStorage.setItem("jciApps", JSON.stringify(localApps));
+    // Only save local submissions back to localStorage
+    const localApps = JSON.parse(localStorage.getItem("jciApps")||"[]");
+    const newLocal = applications.filter(a=>localApps.includes(a));
+    localStorage.setItem("jciApps", JSON.stringify(newLocal));
 }
-</script>
 
-</body>
-</html>
+/* TEAM FILTER CHANGE */
+document.getElementById("teamFilter").addEventListener("change", renderTable);
