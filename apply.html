@@ -265,8 +265,8 @@ button.back {
 <div id="success" class="success">
     <div class="successBox">
         <div class="text-4xl mb-2">✔</div>
-        <h2 class="font-bold">Application Submitted</h2>
-        <p class="text-gray-600 text-sm">Please allow up to 72 hours for review</p>
+        <h2 class="font-bold">Application Successfully Submitted!</h2>
+        <p class="text-gray-600 text-sm">Please allow up to 72 hours for review by our Leadership.</p>
     </div>
 </div>
 
@@ -295,39 +295,45 @@ function prevPage() {
 }
 
 async function submitForm() {
-    // Collect all form data
-    const data = {
-        team: rawTeam || "Unknown",
-        preferredName: document.querySelector('input[placeholder="Preferred Name"]').value,
-        roblox: document.querySelector('input[placeholder^="Roblox"]').value,
-        discord: document.querySelector('input[placeholder^="Discord"]').value,
-        scale: document.querySelector('.scaleItem.selected input')?.value || "",
-        qualified: document.querySelectorAll('textarea')[0].value,
-        unavailable: document.querySelectorAll('textarea')[1].value,
-        extra: document.querySelector('#extraQuestions input, #extraQuestions textarea')?.value || "",
-        agreements: {
-            adminAbuse: document.querySelectorAll('select')[0].value,
-            comfort: document.querySelectorAll('select')[1].value,
-            training: document.querySelectorAll('select')[2].value,
-            TOS: document.querySelectorAll('select')[3].value
-        },
-        submittedAt: new Date().toISOString()
-    }
 
-    try {
-        // Send data to npoint
-        await fetch('https://api.npoint.io/8c134d701d74f33e8026', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
+const data = {
+team: rawTeam || "Unknown",
+preferredName: document.querySelector('input[placeholder="Preferred Name"]').value,
+roblox: document.querySelector('input[placeholder^="Roblox"]').value,
+discord: document.querySelector('input[placeholder^="Discord"]').value,
+scale: document.querySelector('.scaleItem.selected input')?.value || "",
+qualified: document.querySelectorAll('textarea')[0].value,
+unavailable: document.querySelectorAll('textarea')[1].value,
+extra: document.querySelector('#extraQuestions input, #extraQuestions textarea')?.value || "",
+adminAbuse: document.querySelectorAll('select')[1].value,
+comfort: document.querySelectorAll('select')[2].value,
+training: document.querySelectorAll('select')[3].value,
+tos: document.querySelectorAll('select')[4].value,
+status: "Pending",
+submittedAt: new Date().toISOString()
+}
 
-        // Show success popup
-        document.getElementById("success").classList.add("show")
-    } catch (err) {
-        alert("Failed to submit application. Try again later.")
-        console.error(err)
-    }
+try {
+
+await fetch("https://sheetdb.io/api/v1/0gowkb0zc5uc4", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({
+data: data
+})
+})
+
+document.getElementById("success").classList.add("show")
+
+} catch(err) {
+
+alert("Failed to submit application. Try again later.")
+console.error(err)
+
+}
+
 }
 
 /* SCALE SELECTION */
