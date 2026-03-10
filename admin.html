@@ -1,108 +1,152 @@
-const PASSCODE = "gabr123"; // Your admin passcode
-let applications = []; // Will hold all merged applications
+const API_URL = "https://sheetdb.io/api/v1/0gowkb0zc5uc4";
+
+const USERNAME = "jcistaff234";
+const PASSCODE = "gabr123";
+
+let applications = [];
 
 /* LOGIN / LOGOUT */
+
 function login(){
-    const input = document.getElementById("passcode").value;
-    if(input === PASSCODE){
-        document.getElementById("loginCard").classList.add("hidden");
-        document.getElementById("dashboard").classList.remove("hidden");
-        loadApplications();
-    } else {
-        document.getElementById("loginError").classList.remove("hidden");
-    }
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("passcode").value;
+
+  if(user === USERNAME && pass === PASSCODE){
+
+    document.getElementById("loginCard").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    loadApplications();
+
+  } else {
+
+    document.getElementById("loginError").classList.remove("hidden");
+
+  }
 }
 
 function logout(){
-    document.getElementById("loginCard").classList.remove("hidden");
-    document.getElementById("dashboard").classList.add("hidden");
+
+  document.getElementById("loginCard").classList.remove("hidden");
+  document.getElementById("dashboard").classList.add("hidden");
+
 }
 
-/* MERGE LOCAL AND REMOTE APPLICATIONS */
+
+/* LOAD APPLICATIONS FROM SHEETDB */
+
 async function loadApplications(){
-    try {
-        // Fetch from nPoint
-        const res = await fetch('https://api.npoint.io/8c134d701d74f33e8026');
-        const remoteApps = await res.json();
 
-        // Get localStorage apps
-        const localApps = JSON.parse(localStorage.getItem("jciApps")||"[]");
+  try{
 
-        // Merge: remote first, then local
-        applications = [...remoteApps, ...localApps];
+    const res = await fetch(API_URL);
+    applications = await res.json();
 
-        populateTeams();
-        renderTable();
-    } catch(err){
-        alert("Failed to load applications from nPoint.");
-        console.error(err);
-        // Fallback: use localStorage only
-        applications = JSON.parse(localStorage.getItem("jciApps")||"[]");
-        populateTeams();
-        renderTable();
-    }
+    populateTeams();
+    renderTable();
+
+  }catch(err){
+
+    alert("Failed to load applications");
+    console.error(err);
+
+  }
+
 }
 
-/* POPULATE TEAM FILTER */
+
+/* TEAM FILTER */
+
 function populateTeams(){
-    const teamFilter = document.getElementById("teamFilter");
-    const teams = [...new Set(applications.map(a=>a.team))];
-    teamFilter.innerHTML = '<option value="all">All Teams</option>' +
-        teams.map(t=>`<option value="${t}">${t}</option>`).join("");
+
+  const teamFilter = document.getElementById("teamFilter");
+
+  const teams = [...new Set(applications.map(a => a.team))];
+
+  teamFilter.innerHTML =
+    '<option value="all">All Teams</option>' +
+    teams.map(t => `<option value="${t}">${t}</option>`).join("");
+
 }
+
 
 /* RENDER TABLE */
+
 function renderTable(){
-    const filter = document.getElementById("teamFilter").value;
-    const tbody = document.querySelector("#appsTable tbody");
-    tbody.innerHTML = "";
-    applications.forEach((a,index)=>{
-        if(filter !== "all" && a.team !== filter) return;
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${a.team}</td>
-            <td>${a.preferredName}</td>
-            <td>${a.roblox}</td>
-            <td>${a.discord}</td>
-            <td>${a.scale}</td>
-            <td>${a.qualified}</td>
-            <td>${a.extra}</td>
-            <td>
-                TOS: ${a.agreements?.TOS || ''}<br>
-                Comfort: ${a.agreements?.comfort || ''}<br>
-                Training: ${a.agreements?.training || ''}<br>
-                Admin: ${a.agreements?.adminAbuse || ''}
-            </td>
-            <td>${a.status || 'Pending'}</td>
-            <td>
-                <button class="approve" onclick="approve(${index})">✔</button>
-                <button class="deny" onclick="deny(${index})">✖</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
+
+  const filter = document.getElementById("teamFilter").value;
+
+  const tbody = document.querySelector("#appsTable tbody");
+
+  tbody.innerHTML = "";
+
+  applications.forEach((a,index)=>{
+
+    if(filter !== "all" && a.team !== filter) return;
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${a.team || ""}</td>
+      <td>${a.preferredName || ""}</td>
+      <td>${a.roblox || ""}</td>
+      <td>${a.discord || ""}</td>
+      <td>${a.scale || ""}</td>
+      <td>${a.qualified || ""}</td>
+      <td>${a.unavailable || ""}</td>
+      <td>${a.status || "Pending"}</td>
+      <td>
+        <button onclick="approve(${index})">✔</button>
+        <button onclick="deny(${index})">✖</button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
 }
 
-/* APPROVE / DENY FUNCTIONS */
-function approve(index){
-    applications[index].status = "Approved";
-    saveLocal();
-    renderTable();
+
+/* APPROVE / DENY */
+
+async function approve(index){
+
+  const robloxUser = applications[index].roblox;
+
+  await fetch(`${API_URL}/roblox/${robloxUser}`,{
+    method:"PATCH",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      data:{status:"Approved"}
+    })
+  });
+
+  loadApplications();
+
 }
 
-function deny(index){
-    applications[index].status = "Denied";
-    saveLocal();
-    renderTable();
+async function deny(index){
+
+  const robloxUser = applications[index].roblox;
+
+  await fetch(`${API_URL}/roblox/${robloxUser}`,{
+    method:"PATCH",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      data:{status:"Denied"}
+    })
+  });
+
+  loadApplications();
+
 }
 
-/* SAVE LOCAL MERGED DATA */
-function saveLocal(){
-    // Only save local submissions back to localStorage
-    const localApps = JSON.parse(localStorage.getItem("jciApps")||"[]");
-    const newLocal = applications.filter(a=>localApps.includes(a));
-    localStorage.setItem("jciApps", JSON.stringify(newLocal));
-}
 
-/* TEAM FILTER CHANGE */
-document.getElementById("teamFilter").addEventListener("change", renderTable);
+/* TEAM FILTER EVENT */
+
+document.getElementById("teamFilter").addEventListener("change",renderTable);
