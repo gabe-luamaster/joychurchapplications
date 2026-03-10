@@ -111,7 +111,7 @@ function logout(){
 /* FETCH APPLICATIONS FROM NPOINT */
 async function loadApplications(){
     try {
-        const res = await fetch('https://www.npoint.io/docs/8c134d701d74f33e8026');
+        const res = await fetch('https://api.npoint.io/8c134d701d74f33e8026');
         const data = await res.json();
         applications = data;
         populateTeams();
