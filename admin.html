@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JCI Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body {
+    font-family:"Montserrat",sans-serif;
+    background: linear-gradient(135deg,#0f172a,#1e40af);
+    min-height:100vh;
+    padding:20px;
+    color:white;
+}
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+.card{
+    background:white;
+    color:black;
+    border-radius:18px;
+    padding:30px;
+    margin-bottom:20px;
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+}
+input,select,button{
+    padding:12px 10px;
+    border-radius:10px;
+    border:1px solid #2563eb;
+    font-size:15px;
+}
+button{
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+button:hover{
+    opacity:.9;
+}
+button.approve{background:#14b8a6;color:white;}
+button.deny{background:#ef4444;color:white;}
+button.logout{background:#1e3a8a;color:white;margin-bottom:20px;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:10px;border:1px solid #ddd;text-align:left;}
+th{background:#2563eb;color:white;}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- PASSCODE LOGIN -->
+<div id="loginCard" class="card">
+    <h1 class="text-2xl font-bold mb-4">Admin Login</h1>
+    <input type="password" id="passcode" placeholder="Enter passcode" class="w-full mb-3">
+    <button onclick="login()" class="w-full">Login</button>
+    <p id="loginError" class="text-red-500 mt-2 hidden">Incorrect passcode!</p>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+    <button onclick="logout()" class="logout">Logout</button>
+    <h1 class="text-2xl font-bold mb-4">Submitted Applications</h1>
+
+    <label>Filter by Team:</label>
+    <select id="teamFilter" class="mb-4" onchange="renderTable()">
+        <option value="all">All Teams</option>
+    </select>
+
+    <table id="appsTable">
+        <thead>
+            <tr>
+                <th>Team</th>
+                <th>Name</th>
+                <th>Roblox</th>
+                <th>Discord</th>
+                <th>Attendance</th>
+                <th>Qualifications</th>
+                <th>Extra Qs</th>
+                <th>Agreements</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+const PASSCODE = "gabr123"; // CHANGE THIS TO YOUR SECRET
+
+function login(){
+    const input = document.getElementById("passcode").value;
+    if(input === PASSCODE){
+        document.getElementById("loginCard").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+        loadApplications();
+    } else {
+        document.getElementById("loginError").classList.remove("hidden");
+    }
+}
+
+function logout(){
+    document.getElementById("loginCard").classList.remove("hidden");
+    document.getElementById("dashboard").classList.add("hidden");
+}
+
+/* APPLICATION STORAGE SIMULATION */
+function saveApplication(app){
+    let apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
+    apps.push(app);
+    localStorage.setItem("jciApps", JSON.stringify(apps));
+}
+
+/* LOAD APPLICATIONS INTO TABLE */
+function loadApplications(){
+    const apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
+    const teamFilter = document.getElementById("teamFilter");
+    const teams = [...new Set(apps.map(a=>a.team))];
+    teamFilter.innerHTML = '<option value="all">All Teams</option>'+teams.map(t=>`<option value="${t}">${t}</option>`).join("");
+    renderTable();
+}
+
+function renderTable(){
+    const apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
+    const filter = document.getElementById("teamFilter").value;
+    const tbody = document.querySelector("#appsTable tbody");
+    tbody.innerHTML = "";
+    apps.forEach((a,index)=>{
+        if(filter !== "all" && a.team!==filter) return;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${a.team}</td>
+            <td>${a.name}</td>
+            <td>${a.roblox}</td>
+            <td>${a.discord}</td>
+            <td>${a.attendance}</td>
+            <td>${a.qualified}</td>
+            <td>${a.extra}</td>
+            <td>${a.agreements}</td>
+            <td>${a.status||'Pending'}</td>
+            <td>
+                <button class="approve" onclick="approve(${index})">✔</button>
+                <button class="deny" onclick="deny(${index})">✖</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function approve(index){
+    let apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
+    apps[index].status = "Approved";
+    localStorage.setItem("jciApps", JSON.stringify(apps));
+    renderTable();
+}
+
+function deny(index){
+    let apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
+    apps[index].status = "Denied";
+    localStorage.setItem("jciApps", JSON.stringify(apps));
+    renderTable();
+}
+</script>
+
+</body>
+</html>
