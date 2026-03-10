@@ -90,6 +90,7 @@ th{background:#2563eb;color:white;}
 
 <script>
 const PASSCODE = "gabr123"; // CHANGE THIS TO YOUR SECRET
+let applications = []; // stores fetched applications
 
 function login(){
     const input = document.getElementById("passcode").value;
@@ -107,52 +108,49 @@ function logout(){
     document.getElementById("dashboard").classList.add("hidden");
 }
 
-/* APPLICATION STORAGE SIMULATION */
-function saveApplication(app){
-    let apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
-    apps.push(app);
-    localStorage.setItem("jciApps", JSON.stringify(apps));
-}
-
-/* LOAD APPLICATIONS INTO TABLE */
+/* FETCH APPLICATIONS FROM NPOINT */
 async function loadApplications(){
     try {
-        const res = await fetch("https://www.npoint.io/docs/8c134d701d74f33e8026");
-        const apps = await res.json();
-
-        // Save in localStorage for easier manipulation in approve/deny
-        localStorage.setItem("jciApps", JSON.stringify(apps));
-
-        // Populate team filter
-        const teamFilter = document.getElementById("teamFilter");
-        const teams = [...new Set(apps.map(a=>a.team))];
-        teamFilter.innerHTML = '<option value="all">All Teams</option>' + teams.map(t => `<option value="${t}">${t}</option>`).join("");
-
+        const res = await fetch('https://www.npoint.io/docs/8c134d701d74f33e8026');
+        const data = await res.json();
+        applications = data;
+        populateTeams();
         renderTable();
-    } catch (err) {
-        alert("Failed to load applications from npoint.");
+    } catch(err){
+        alert("Failed to load applications from nPoint.");
         console.error(err);
     }
 }
 
+function populateTeams(){
+    const teamFilter = document.getElementById("teamFilter");
+    const teams = [...new Set(applications.map(a=>a.team))];
+    teamFilter.innerHTML = '<option value="all">All Teams</option>'+teams.map(t=>`<option value="${t}">${t}</option>`).join("");
+}
+
 function renderTable(){
-    const apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
     const filter = document.getElementById("teamFilter").value;
     const tbody = document.querySelector("#appsTable tbody");
     tbody.innerHTML = "";
-    apps.forEach((a,index)=>{
+    applications.forEach((a,index)=>{
         if(filter !== "all" && a.team!==filter) return;
+        const agreements = `
+            TOS: ${a.agreements?.TOS || 'N/A'}, 
+            Comfort: ${a.agreements?.comfort || 'N/A'}, 
+            Training: ${a.agreements?.training || 'N/A'}, 
+            Admin Abuse: ${a.agreements?.adminAbuse || 'N/A'}
+        `;
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${a.team}</td>
-            <td>${a.name}</td>
+            <td>${a.preferredName}</td>
             <td>${a.roblox}</td>
             <td>${a.discord}</td>
-            <td>${a.attendance}</td>
+            <td>${a.scale || 'N/A'}</td>
             <td>${a.qualified}</td>
             <td>${a.extra}</td>
-            <td>${a.agreements}</td>
-            <td>${a.status||'Pending'}</td>
+            <td>${agreements}</td>
+            <td>${a.status || 'Pending'}</td>
             <td>
                 <button class="approve" onclick="approve(${index})">✔</button>
                 <button class="deny" onclick="deny(${index})">✖</button>
@@ -162,17 +160,14 @@ function renderTable(){
     });
 }
 
+/* APPROVE / DENY */
 function approve(index){
-    let apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
-    apps[index].status = "Approved";
-    localStorage.setItem("jciApps", JSON.stringify(apps));
+    applications[index].status = "Approved";
     renderTable();
 }
 
 function deny(index){
-    let apps = JSON.parse(localStorage.getItem("jciApps")||"[]");
-    apps[index].status = "Denied";
-    localStorage.setItem("jciApps", JSON.stringify(apps));
+    applications[index].status = "Denied";
     renderTable();
 }
 </script>
