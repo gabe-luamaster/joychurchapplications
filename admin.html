@@ -62,98 +62,147 @@ th{background:#2563eb;color:white;}
     </table>
 </div>
 
-<script>
-const PASSCODE = "gabr123";
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyDGjPlUQMV9qatW6OKmQVvHbVd04cJWW_c",
+  authDomain: "jci-applications-data.firebaseapp.com",
+  projectId: "jci-applications-data",
+  storageBucket: "jci-applications-data.firebasestorage.app",
+  messagingSenderId: "60833357371",
+  appId: "1:60833357371:web:f642720942da9e757ac61e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* LOGIN INFO */
 const USERNAME = "jcistaff234";
+const PASSCODE = "gabr123";
+
 let applications = [];
-const SHEETDB_URL = "https://sheetdb.io/api/v1/0gowkb0zc5uc4";
 
-// LOGIN / LOGOUT
-function login(){
-    const inputPass = document.getElementById("passcode").value;
-    const inputUser = document.getElementById("username").value;
-    if(inputPass===PASSCODE && inputUser===USERNAME){
-        document.getElementById("loginCard").classList.add("hidden");
-        document.getElementById("dashboard").classList.remove("hidden");
-        loadApplications();
-    } else {
-        document.getElementById("loginError").classList.remove("hidden");
-    }
-}
-function logout(){
-    document.getElementById("loginCard").classList.remove("hidden");
-    document.getElementById("dashboard").classList.add("hidden");
+/* LOGIN */
+window.login = function(){
+
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("passcode").value;
+
+  if(user === USERNAME && pass === PASSCODE){
+
+    document.getElementById("loginCard").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    loadApplications();
+
+  }else{
+
+    document.getElementById("loginError").classList.remove("hidden");
+
+  }
+
 }
 
-// FETCH APPLICATIONS FROM SHEETDB
+/* LOGOUT */
+window.logout = function(){
+
+  document.getElementById("loginCard").classList.remove("hidden");
+  document.getElementById("dashboard").classList.add("hidden");
+
+}
+
+/* LOAD APPLICATIONS FROM FIREBASE */
 async function loadApplications(){
-    try {
-        const res = await fetch(SHEETDB_URL);
-        const data = await res.json();
-        applications = data.map(a=>({
-            ...a,
-            source: "sheetdb"
-        }));
-        populateTeams();
-        renderTable();
-    } catch(err){
-        alert("Failed to load applications from SheetDB.");
-        console.error(err);
-    }
-}
 
-// POPULATE TEAM FILTER
-function populateTeams(){
-    const teamFilter = document.getElementById("teamFilter");
-    const teams = [...new Set(applications.map(a=>a.team).filter(t=>t))];
-    teamFilter.innerHTML = '<option value="all">All Teams</option>'+teams.map(t=>`<option value="${t}">${t}</option>`).join("");
-}
+  applications = [];
 
-// RENDER TABLE
-function renderTable(){
-    const filter = document.getElementById("teamFilter").value;
-    const tbody = document.querySelector("#appsTable tbody");
-    tbody.innerHTML = "";
-    applications.forEach((a,index)=>{
-        if(filter!=="all" && a.team!==filter) return;
-        const agreements = `TOS:${a.tos || ""}, Comfort:${a.comfort || ""}, Training:${a.training || ""}, Admin:${a.adminAbuse || ""}`;
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${a.team || ""}</td>
-            <td>${a.preferredName || ""}</td>
-            <td>${a.roblox || ""}</td>
-            <td>${a.discord || ""}</td>
-            <td>${a.scale || ""}</td>
-            <td>${a.qualified || ""}</td>
-            <td>${a.unavailable || ""}</td>
-            <td>${agreements}</td>
-            <td>${a.status || "Pending"}</td>
-            <td>
-                <button class="approve" onclick="updateStatus(${index}, 'Approved')">✔</button>
-                <button class="deny" onclick="updateStatus(${index}, 'Denied')">✖</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
+  const snapshot = await getDocs(collection(db,"applications"));
+
+  snapshot.forEach(docSnap=>{
+    applications.push({
+      id: docSnap.id,
+      ...docSnap.data()
     });
+  });
+
+  populateTeams();
+  renderTable();
+
 }
 
-// UPDATE STATUS
-async function updateStatus(index, newStatus){
-    const app = applications[index];
-    app.status = newStatus;
-    renderTable();
+/* TEAM FILTER */
+function populateTeams(){
 
-    try {
-        // Update SheetDB
-        await fetch(`${SHEETDB_URL}/team/${encodeURIComponent(app.team)}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data: { status: newStatus } })
-        });
-    } catch(err){
-        console.error("Failed to update SheetDB:", err);
-    }
+  const teamFilter = document.getElementById("teamFilter");
+
+  const teams = [...new Set(applications.map(a=>a.team).filter(Boolean))];
+
+  teamFilter.innerHTML =
+    '<option value="all">All Teams</option>' +
+    teams.map(t=>`<option value="${t}">${t}</option>`).join("");
+
 }
+
+/* RENDER TABLE */
+window.renderTable = function(){
+
+  const filter = document.getElementById("teamFilter").value;
+
+  const tbody = document.querySelector("#appsTable tbody");
+
+  tbody.innerHTML = "";
+
+  applications.forEach((a,index)=>{
+
+    if(filter !== "all" && a.team !== filter) return;
+
+    const agreements =
+      `TOS:${a.tos || ""} | Comfort:${a.comfort || ""} | Training:${a.training || ""} | Admin:${a.adminAbuse || ""}`;
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${a.team || ""}</td>
+      <td>${a.preferredName || ""}</td>
+      <td>${a.roblox || ""}</td>
+      <td>${a.discord || ""}</td>
+      <td>${a.scale || ""}</td>
+      <td>${a.qualified || ""}</td>
+      <td>${a.unavailable || ""}</td>
+      <td>${agreements}</td>
+      <td>${a.status || "Pending"}</td>
+      <td>
+        <button class="approve" onclick="updateStatus(${index}, 'Approved')">✔</button>
+        <button class="deny" onclick="updateStatus(${index}, 'Denied')">✖</button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+}
+
+/* APPROVE / DENY */
+window.updateStatus = async function(index,newStatus){
+
+  const appData = applications[index];
+
+  applications[index].status = newStatus;
+
+  renderTable();
+
+  await updateDoc(
+    doc(db,"applications",appData.id),
+    { status:newStatus }
+  );
+
+}
+
 </script>
 
 </body>
