@@ -45,13 +45,13 @@ name:"Media Team",
 leaders:["Joey"],
 description:"Creates graphics and announcements for JCI.",
 requirements:"Must have access to a PC/Laptop.",
-status:"Closed"
+status:"Open"
 },
 {
 name:"Outreach Team",
 leaders:["Oj"],
 description:"Creates graphics and announcements for JCI.",
-status:"Closed"
+status:"Open"
 },
 
 {
