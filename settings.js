@@ -20,7 +20,7 @@ status:"Open"
 
 {
 name:"Security Team",
-leaders:["Dylan"],
+leaders:["Ade"],
 description:"Maintains a safe and respectful environment during services.",
 status:"Open"
 },
@@ -29,7 +29,7 @@ status:"Open"
 name:"Production Team",
 leaders:["Zyphic"],
 description:"Handles lighting, visuals, and technical elements of service.",
-status:"Closed"
+status:"Open"
 },
 
 {
@@ -45,6 +45,12 @@ name:"Media Team",
 leaders:["Joey"],
 description:"Creates graphics and announcements for JCI.",
 requirements:"Must have access to a PC/Laptop.",
+status:"Closed"
+},
+{
+name:"Outreach Team",
+leaders:["Oj"],
+description:"Creates graphics and announcements for JCI.",
 status:"Closed"
 },
 
