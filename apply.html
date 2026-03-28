@@ -220,9 +220,11 @@ text-align:center;
 <div class="flex gap-3">
 
 <button type="button" onclick="prevPage()" class="back">Back</button>
-<button type="button" onclick="submitForm()" class="next">Submit</button>
+<button id="submitBtn" type="button" onclick="submitForm()" class="next">Submit</button>
 
 </div>
+
+<p id="submitMessage" class="text-sm"></p>
 
 </div>
 
@@ -292,16 +294,19 @@ rawTeam?rawTeam+" Application":"Application Form";
 
 window.submitForm=async function(){
 
+const message = document.getElementById("submitMessage");
+const submitBtn = document.getElementById("submitBtn");
+
 const data={
 team:rawTeam||"Unknown",
-preferredName:document.getElementById("preferredName").value,
+preferredName:document.getElementById("preferredName").value.trim(),
 gender:document.getElementById("gender").value,
-roblox:document.getElementById("roblox").value,
-discord:document.getElementById("discord").value,
+roblox:document.getElementById("roblox").value.trim(),
+discord:document.getElementById("discord").value.trim(),
 scale:document.querySelector(".scaleItem.selected input")?.value||"",
-qualified:document.getElementById("qualified").value,
-unavailable:document.getElementById("unavailable").value,
-extra:document.getElementById("extra")?.value||"",
+qualified:document.getElementById("qualified").value.trim(),
+unavailable:document.getElementById("unavailable").value.trim(),
+extra:document.getElementById("extra")?.value?.trim()||"",
 adminAbuse:document.getElementById("adminAbuse").value,
 comfort:document.getElementById("comfort").value,
 training:document.getElementById("training").value,
@@ -310,9 +315,33 @@ status:"Pending",
 submittedAt:new Date()
 };
 
-await addDoc(collection(db,"applications"),data);
+if(!data.preferredName || !data.roblox || !data.discord || !data.qualified){
+message.textContent = "Please fill out all required fields before submitting.";
+message.className = "text-sm text-red-600";
+return;
+}
 
+if(!data.scale){
+message.textContent = "Please choose an attendance number from 1-10.";
+message.className = "text-sm text-red-600";
+return;
+}
+
+submitBtn.disabled = true;
+submitBtn.textContent = "Submitting...";
+message.textContent = "";
+
+try{
+await addDoc(collection(db,"applications"),data);
 document.getElementById("success").classList.add("show");
+}catch(error){
+console.error("Submission failed:", error);
+message.textContent = "Submit failed. Check Firebase rules and internet connection, then try again.";
+message.className = "text-sm text-red-600";
+}finally{
+submitBtn.disabled = false;
+submitBtn.textContent = "Submit";
+}
 
 }
 
